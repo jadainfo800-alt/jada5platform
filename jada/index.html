@@ -1,0 +1,3436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jada 5 - Spinning Wheel Game</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #4a6cfa;
+            --primary-dark: #3a5bd9;
+            --secondary: #f5f7ff;
+            --text: #2d3748;
+            --text-light: #718096;
+            --background: #ffffff;
+            --card-bg: #f8fafc;
+            --success: #48bb78;
+            --danger: #e53e3e;
+            --warning: #ed8936;
+            --border: #e2e8f0;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --radius: 12px;
+            --footer-bg: #2d3748;
+            --footer-text: #e2e8f0;
+            --transition: all 0.3s ease;
+        }
+
+        .dark-theme {
+            --primary: #5b7efc;
+            --primary-dark: #4a6cfa;
+            --secondary: #2d3748;
+            --text: #e2e8f0;
+            --text-light: #a0aec0;
+            --background: #1a202c;
+            --card-bg: #2d3748;
+            --border: #4a5568;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+            --footer-bg: #1a202c;
+            --footer-text: #e2e8f0;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--background);
+            color: var(--text);
+            line-height: 1.6;
+            transition: var(--transition);
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+
+        /* Header Styles */
+        header {
+            background-color: var(--primary);
+            color: white;
+            padding: 1rem 0;
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+        }
+
+        .logo i {
+            margin-right: 0.5rem;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 1.5rem;
+            position: relative;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: opacity 0.3s;
+            position: relative;
+            padding: 0.5rem 0;
+        }
+
+        .nav-links a:hover {
+            opacity: 0.8;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background-color: white;
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        /* Dropdown Menu */
+        .dropdown {
+            position: relative;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background-color: white;
+            min-width: 200px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+            border-radius: var(--radius);
+            z-index: 1;
+            overflow: hidden;
+            margin-top: 0.5rem;
+        }
+
+        .dropdown-content a {
+            color: var(--text);
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+            transition: background-color 0.3s;
+        }
+
+        .dropdown-content a:hover {
+            background-color: var(--secondary);
+            color: var(--primary);
+        }
+
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+
+        .user-actions {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .theme-switch {
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: transform 0.3s;
+        }
+
+        .theme-switch:hover {
+            transform: rotate(30deg);
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+            position: relative;
+            transition: var(--transition);
+        }
+
+        .user-profile:hover {
+            opacity: 0.8;
+        }
+
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background-color: var(--secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary);
+            font-weight: bold;
+            transition: var(--transition);
+        }
+
+        .user-name {
+            font-weight: 500;
+        }
+
+        .dropdown-icon {
+            font-size: 0.8rem;
+            transition: var(--transition);
+        }
+
+        .user-profile:hover .dropdown-icon {
+            transform: rotate(180deg);
+        }
+
+        /* Wallet Balance in Header */
+        .wallet-balance {
+            display: flex;
+            align-items: center;
+            background-color: rgba(255, 255, 255, 0.2);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .wallet-balance:hover {
+            background-color: rgba(255, 255, 255, 0.3);
+        }
+
+        .wallet-balance i {
+            margin-right: 0.5rem;
+        }
+
+        /* Mobile Menu */
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            padding: 4rem 0;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            transform: rotate(30deg);
+        }
+
+        .hero h1 {
+            font-size: 2.8rem;
+            margin-bottom: 1rem;
+            position: relative;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            max-width: 800px;
+            margin: 0 auto 2rem;
+            opacity: 0.9;
+            position: relative;
+        }
+
+        .cta-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            position: relative;
+        }
+
+        .btn {
+            padding: 0.8rem 1.8rem;
+            border-radius: var(--radius);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-block;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        .btn-primary {
+            background-color: white;
+            color: var(--primary);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-primary:hover {
+            background-color: var(--secondary);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .btn-secondary {
+            background-color: transparent;
+            color: white;
+            border: 2px solid white;
+        }
+
+        .btn-secondary:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Main Content */
+        .main-content {
+            padding: 3rem 0;
+        }
+
+        .dashboard {
+            display: flex;
+            gap: 2rem;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 250px;
+            background-color: var(--card-bg);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 1.5rem;
+            flex-shrink: 0;
+            transition: var(--transition);
+        }
+
+        .sidebar-menu {
+            list-style: none;
+        }
+
+        .sidebar-menu li {
+            margin-bottom: 0.5rem;
+        }
+
+        .sidebar-menu a {
+            display: flex;
+            align-items: center;
+            padding: 0.8rem 1rem;
+            border-radius: var(--radius);
+            color: var(--text);
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+
+        .sidebar-menu a:hover {
+            background-color: var(--secondary);
+            transform: translateX(5px);
+        }
+
+        .sidebar-menu a.active {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .sidebar-menu i {
+            margin-right: 0.8rem;
+            width: 20px;
+            text-align: center;
+        }
+
+        /* Dashboard Content */
+        .dashboard-content {
+            flex: 1;
+        }
+
+        .welcome-banner {
+            background-color: var(--card-bg);
+            border-radius: var(--radius);
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .welcome-banner::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 5px;
+            height: 100%;
+            background: var(--primary);
+        }
+
+        .welcome-banner h1 {
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+            color: var(--primary);
+        }
+
+        .stats-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background-color: var(--card-bg);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            text-align: center;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-card i {
+            font-size: 2rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+
+        .stat-card h3 {
+            font-size: 0.9rem;
+            color: var(--text-light);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-card .value {
+            font-size: 1.8rem;
+            font-weight: bold;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            color: var(--text);
+            display: flex;
+            align-items: center;
+        }
+
+        .section-title::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background-color: var(--border);
+            margin-left: 1rem;
+        }
+
+        /* Wheel Game Categories Section */
+        .wheel-categories {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .wheel-category-card {
+            background-color: var(--card-bg);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 1.5rem;
+            text-align: center;
+            transition: transform 0.3s, box-shadow 0.3s;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            height: 100%;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .wheel-category-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(90deg, var(--primary), var(--primary-dark));
+        }
+
+        .wheel-category-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.15);
+        }
+
+        .wheel-category-card h3 {
+            color: var(--primary);
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .wheel-category-card .price {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: var(--text);
+            margin-bottom: 1rem;
+        }
+
+        .wheel-category-card .prize-pool {
+            font-size: 1.3rem;
+            color: var(--success);
+            margin-bottom: 1rem;
+        }
+
+        .wheel-category-card .countdown {
+            font-size: 1rem;
+            color: var(--warning);
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .buy-spin-btn {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: var(--radius);
+            padding: 0.8rem 1.5rem;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            width: 100%;
+        }
+
+        .buy-spin-btn:hover {
+            background-color: var(--primary-dark);
+        }
+
+        /* Draw Cards */
+        .draw-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .draw-card {
+            background-color: var(--card-bg);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+            text-align: center;
+            transition: var(--transition);
+        }
+
+        .draw-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .draw-type {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .prize {
+            font-size: 1.8rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+        }
+
+        .countdown {
+            color: var(--warning);
+            margin-bottom: 1rem;
+            font-weight: 500;
+        }
+
+        .ticket-price {
+            color: var(--text-light);
+            margin-bottom: 1.5rem;
+        }
+
+        .purchase-btn {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            width: 100%;
+        }
+
+        .purchase-btn:hover {
+            background-color: var(--primary-dark);
+        }
+
+        /* Ticket Cards */
+        .ticket-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .ticket-card {
+            background-color: var(--card-bg);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+            position: relative;
+            transition: var(--transition);
+        }
+
+        .ticket-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .ticket-card.winner {
+            border: 2px solid var(--success);
+        }
+
+        .ticket-card.winner::before {
+            content: '🏆';
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            background-color: var(--success);
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .ticket-code {
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin: 0.5rem 0;
+            letter-spacing: 1px;
+        }
+
+        .purchase-date {
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
+
+        .prize-won {
+            color: var(--success);
+            font-weight: bold;
+            margin-top: 0.5rem;
+        }
+
+        /* Wallet Section */
+        .wallet-section {
+            display: none;
+        }
+
+        .wallet-card {
+            background-color: var(--card-bg);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .balance-display {
+            text-align: center;
+            padding: 1.5rem;
+            background-color: var(--secondary);
+            border-radius: var(--radius);
+            margin-bottom: 1.5rem;
+        }
+
+        .balance-amount {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: var(--primary);
+        }
+
+        .nav-tabs {
+            display: flex;
+            list-style: none;
+            margin-bottom: 1.5rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .nav-tabs li {
+            margin-right: 0.5rem;
+        }
+
+        .nav-tabs a {
+            display: block;
+            padding: 0.8rem 1.5rem;
+            text-decoration: none;
+            color: var(--text-light);
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s;
+        }
+
+        .nav-tabs a.active {
+            color: var(--primary);
+            border-bottom: 3px solid var(--primary);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            background-color: var(--background);
+            color: var(--text);
+            transition: var(--transition);
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(74, 108, 250, 0.1);
+        }
+
+        .transaction-history {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .transaction-history th,
+        .transaction-history td {
+            padding: 0.8rem 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .transaction-history th {
+            background-color: var(--secondary);
+            font-weight: 600;
+        }
+
+        .transaction-history tr:hover {
+            background-color: var(--secondary);
+        }
+
+        .status-completed {
+            color: var(--success);
+            font-weight: 500;
+        }
+
+        .status-pending {
+            color: var(--warning);
+            font-weight: 500;
+        }
+
+        .alert {
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            border-radius: var(--radius);
+        }
+
+        .alert-success {
+            background-color: rgba(72, 187, 120, 0.2);
+            color: var(--success);
+            border: 1px solid var(--success);
+        }
+
+        .alert-error {
+            background-color: rgba(229, 62, 62, 0.2);
+            color: var(--danger);
+            border: 1px solid var(--danger);
+        }
+
+        /* Referrals Section */
+        .referrals-section {
+            display: none;
+        }
+
+        .referral-banner {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            border-radius: var(--radius);
+            padding: 2rem;
+            margin-bottom: 2rem;
+            color: white;
+            text-align: center;
+        }
+
+        .referral-banner h1 {
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+        }
+
+        .referral-banner p {
+            margin-bottom: 1.5rem;
+            opacity: 0.9;
+        }
+
+        .highlight {
+            font-weight: bold;
+            color: #ffd700;
+        }
+
+        .referral-steps {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .referral-step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            max-width: 150px;
+        }
+
+        .step-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+
+        .step-text h3 {
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .step-text p {
+            font-size: 0.85rem;
+            opacity: 0.8;
+            margin-bottom: 0;
+        }
+
+        .referral-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .referral-stat-card {
+            background-color: var(--card-bg);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            text-align: center;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+        }
+
+        .referral-stat-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+            font-size: 1.2rem;
+        }
+
+        .stat-icon.referrals {
+            background-color: rgba(74, 108, 250, 0.2);
+            color: var(--primary);
+        }
+
+        .stat-icon.active {
+            background-color: rgba(72, 187, 120, 0.2);
+            color: var(--success);
+        }
+
+        .stat-icon.earnings {
+            background-color: rgba(237, 137, 54, 0.2);
+            color: var(--warning);
+        }
+
+        .stat-icon.pending {
+            background-color: rgba(229, 62, 62, 0.2);
+            color: var(--danger);
+        }
+
+        .referral-link-section {
+            background-color: var(--card-bg);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow);
+        }
+
+        .referral-link-container {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .referral-link {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .referral-link input {
+            flex: 1;
+            padding: 0.8rem;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            background-color: var(--background);
+            color: var(--text);
+        }
+
+        .btn-copy {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: var(--radius);
+            padding: 0 1rem;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .btn-copy:hover {
+            background-color: var(--primary-dark);
+        }
+
+        .referral-code {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .share-options h3 {
+            margin-bottom: 1rem;
+        }
+
+        .social-share-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .btn-social {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            background-color: var(--background);
+            color: var(--text);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-social.whatsapp:hover {
+            background-color: #25D366;
+            color: white;
+            border-color: #25D366;
+        }
+
+        .btn-social.facebook:hover {
+            background-color: #4267B2;
+            color: white;
+            border-color: #4267B2;
+        }
+
+        .btn-social.twitter:hover {
+            background-color: #1DA1F2;
+            color: white;
+            border-color: #1DA1F2;
+        }
+
+        .btn-social.telegram:hover {
+            background-color: #0088cc;
+            color: white;
+            border-color: #0088cc;
+        }
+
+        .btn-social.email:hover {
+            background-color: #EA4335;
+            color: white;
+            border-color: #EA4335;
+        }
+
+        .referral-table-container {
+            background-color: var(--card-bg);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow);
+            overflow-x: auto;
+        }
+
+        .referral-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .referral-table th,
+        .referral-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .referral-table th {
+            background-color: var(--secondary);
+            font-weight: 600;
+        }
+
+        .referral-table tr:hover {
+            background-color: var(--secondary);
+        }
+
+        .user-cell {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background-color: var(--primary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        .user-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .user-name {
+            font-weight: 500;
+        }
+
+        .user-email {
+            font-size: 0.85rem;
+            color: var(--text-light);
+        }
+
+        .status {
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .status.active {
+            background-color: rgba(72, 187, 120, 0.2);
+            color: var(--success);
+        }
+
+        .status.pending {
+            background-color: rgba(237, 137, 54, 0.2);
+            color: var(--warning);
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .btn-page {
+            padding: 0.5rem 0.8rem;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            background-color: var(--background);
+            color: var(--text);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-page:hover {
+            background-color: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .btn-page.active {
+            background-color: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .btn-page:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .referral-faq {
+            background-color: var(--card-bg);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+        }
+
+        .faq-container {
+            margin-top: 1.5rem;
+        }
+
+        .faq-item {
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .faq-question {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .faq-question h3 {
+            font-size: 1rem;
+            font-weight: 500;
+        }
+
+        .faq-answer {
+            margin-top: 1rem;
+            display: none;
+        }
+
+        .faq-answer.active {
+            display: block;
+        }
+
+        /* Footer */
+        footer {
+            background-color: var(--footer-bg);
+            color: var(--footer-text);
+            padding: 3rem 0 1.5rem;
+            margin-top: 3rem;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .footer-section h3 {
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+            color: white;
+        }
+
+        .footer-links {
+            list-style: none;
+        }
+
+        .footer-links li {
+            margin-bottom: 0.5rem;
+        }
+
+        .footer-links a {
+            color: var(--footer-text);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .footer-links a:hover {
+            color: white;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .social-links a {
+            color: var(--footer-text);
+            font-size: 1.5rem;
+            transition: color 0.3s;
+        }
+
+        .social-links a:hover {
+            color: white;
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 1.5rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 0.9rem;
+            color: var(--footer-text);
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background-color: var(--background);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            width: 90%;
+            max-width: 500px;
+            padding: 2rem;
+            position: relative;
+            animation: modalFadeIn 0.3s;
+        }
+
+        @keyframes modalFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-light);
+            transition: var(--transition);
+        }
+
+        .close-modal:hover {
+            color: var(--danger);
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            color: var(--primary);
+        }
+
+        .purchase-summary {
+            background-color: var(--secondary);
+            padding: 1rem;
+            border-radius: var(--radius);
+            margin-bottom: 1.5rem;
+        }
+
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+        }
+
+        .summary-total {
+            font-weight: bold;
+            border-top: 1px solid var(--border);
+            padding-top: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+        /* Auth Modals */
+        .auth-modal {
+            max-width: 450px;
+        }
+
+        .auth-tabs {
+            display: flex;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 1.5rem;
+        }
+
+        .auth-tab {
+            flex: 1;
+            text-align: center;
+            padding: 1rem;
+            cursor: pointer;
+            background: #f8f9fa;
+            transition: background 0.3s;
+        }
+
+        .auth-tab.active {
+            background: white;
+            border-bottom: 3px solid var(--primary);
+            font-weight: bold;
+        }
+
+        .auth-content {
+            display: none;
+        }
+
+        .auth-content.active {
+            display: block;
+        }
+
+        .input-with-icon {
+            position: relative;
+        }
+
+        .input-with-icon i:first-of-type {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #777;
+        }
+
+        .input-with-icon .toggle-password {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #777;
+            cursor: pointer;
+        }
+
+        .auth-form input[type="text"],
+        .auth-form input[type="email"],
+        .auth-form input[type="password"],
+        .auth-form input[type="tel"] {
+            width: 100%;
+            padding: 12px 15px 12px 45px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            font-size: 1rem;
+            transition: border-color 0.3s;
+            margin-bottom: 1rem;
+        }
+
+        .auth-form input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .error-message {
+            color: var(--danger);
+            font-size: 0.85rem;
+            margin-top: -0.5rem;
+            margin-bottom: 1rem;
+            display: none;
+        }
+
+        .form-options {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .remember-me {
+            display: flex;
+            align-items: center;
+        }
+
+        .remember-me input {
+            margin-right: 8px;
+        }
+
+        .forgot-password {
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        .forgot-password:hover {
+            text-decoration: underline;
+        }
+
+        .auth-divider {
+            display: flex;
+            align-items: center;
+            margin: 1.5rem 0;
+            color: var(--text-light);
+        }
+
+        .auth-divider::before,
+        .auth-divider::after {
+            content: "";
+            flex: 1;
+            height: 1px;
+            background-color: var(--border);
+        }
+
+        .auth-divider span {
+            padding: 0 15px;
+        }
+
+        .social-login {
+            margin-bottom: 1rem;
+        }
+
+        .btn-social {
+            margin-bottom: 10px;
+            background-color: #f8f9fa;
+            color: #333;
+            border: 1px solid #ddd;
+            width: 100%;
+        }
+
+        .btn-google:hover {
+            background-color: #db4437;
+            color: white;
+        }
+
+        .btn-facebook:hover {
+            background-color: #4267B2;
+            color: white;
+        }
+
+        .auth-footer {
+            text-align: center;
+            margin-top: 1.5rem;
+        }
+
+        .auth-footer a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .auth-footer a:hover {
+            text-decoration: underline;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .checkbox-group input {
+            margin-right: 10px;
+        }
+
+        /* Verification specific styles */
+        .verification-code-container {
+            display: flex;
+            gap: 10px;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+        }
+
+        .verification-input {
+            width: 50px !important;
+            height: 60px;
+            text-align: center;
+            font-size: 1.5rem;
+            padding: 0 !important;
+        }
+
+        .verification-timer {
+            text-align: center;
+            margin: 1rem 0;
+            font-weight: 600;
+        }
+
+        .resend-code {
+            text-align: center;
+            margin-top: 1rem;
+        }
+
+        .resend-message {
+            margin-top: 5px;
+            font-size: 0.9rem;
+        }
+
+        /* Success message */
+        .success-message {
+            background-color: rgba(72, 187, 120, 0.2);
+            color: var(--success);
+            padding: 12px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            text-align: center;
+            display: none;
+        }
+
+        /* Loading spinner */
+        .spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            border-left: 4px solid var(--primary);
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            animation: spin 1s linear infinite;
+            display: inline-block;
+            margin-right: 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Auth Section */
+        .auth-container {
+            width: 100%;
+            max-width: 500px;
+            margin: 2rem auto;
+        }
+
+        .auth-card {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+        }
+
+        .auth-header {
+            background: linear-gradient(to right, var(--primary), var(--primary-dark));
+            color: white;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .auth-header h2 {
+            margin-bottom: 0.5rem;
+        }
+
+        .auth-header h2 i {
+            margin-right: 10px;
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 992px) {
+            .dashboard {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+                margin-bottom: 2rem;
+            }
+
+            .sidebar-menu {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 0.5rem;
+            }
+
+            .sidebar-menu li {
+                margin-bottom: 0;
+            }
+
+            .sidebar-menu a {
+                padding: 0.5rem 1rem;
+            }
+
+            .referral-steps {
+                flex-direction: column;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header-content {
+                flex-wrap: wrap;
+            }
+
+            .nav-links {
+                display: none;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                width: 100%;
+                background-color: var(--primary);
+                flex-direction: column;
+                padding: 1rem;
+                box-shadow: var(--shadow);
+            }
+
+            .nav-links.active {
+                display: flex;
+            }
+
+            .mobile-menu-btn {
+                display: block;
+            }
+
+            .hero h1 {
+                font-size: 2rem;
+            }
+
+            .hero p {
+                font-size: 1rem;
+            }
+
+            .stats-cards {
+                grid-template-columns: 1fr;
+            }
+
+            .draw-cards {
+                grid-template-columns: 1fr;
+            }
+
+            .ticket-cards {
+                grid-template-columns: 1fr;
+            }
+
+            .footer-content {
+                grid-template-columns: 1fr;
+            }
+
+            .wallet-balance .balance-text {
+                display: none;
+            }
+
+            .auth-tabs {
+                flex-direction: column;
+            }
+
+            .referral-stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .referral-link {
+                flex-direction: column;
+            }
+
+            .social-share-buttons {
+                justify-content: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .cta-buttons {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+            }
+
+            .user-name {
+                display: none;
+            }
+
+            .nav-tabs a {
+                padding: 0.5rem 1rem;
+                font-size: 0.9rem;
+            }
+
+            .auth-form input[type="text"],
+            .auth-form input[type="email"],
+            .auth-form input[type="password"],
+            .auth-form input[type="tel"] {
+                padding: 10px 12px 10px 40px;
+            }
+
+            .verification-code-container {
+                gap: 5px;
+            }
+            
+            .verification-input {
+                width: 40px !important;
+                height: 50px;
+                font-size: 1.2rem;
+            }
+
+            .referral-stats {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container header-content">
+            <div class="logo">
+                <i class="fas fa-ticket-alt"></i>
+                <span>Jada 5</span>
+            </div>
+            
+            <nav class="nav-links" id="mainNav">
+                <a href="#" data-section="dashboard">Home</a>
+                <div class="dropdown">
+                    <a href="#">Games <i class="fas fa-chevron-down" style="font-size: 0.8rem; margin-left: 0.3rem;"></i></a>
+                    <div class="dropdown-content">
+                        <a href="#" data-game="dice">Dice Roll</a>
+                        <a href="#" data-game="coin">Flip the Coin</a>
+                        <a href="#" data-game="ticket">Ticket Game</a>
+                    </div>
+                </div>
+                <a href="#">Results</a>
+                <a href="#">About</a>
+                <a href="#">Contact</a>
+            </nav>
+            
+            <div class="user-actions">
+                <div class="wallet-balance" id="walletBtn">
+                    <i class="fas fa-wallet"></i>
+                    <span class="balance-text">Balance: </span>
+                    <span id="header-balance">UGX 0.00</span>
+                </div>
+                
+                <button id="themeSwitcher" class="theme-switch">
+                    <i class="fas fa-moon"></i>
+                </button>
+                
+                <div class="user-profile" id="userProfile" style="display: none;">
+                    <div class="user-avatar">D</div>
+                    <span class="user-name">David</span>
+                    <i class="fas fa-chevron-down dropdown-icon"></i>
+                    
+                    <!-- User dropdown menu -->
+                    <div class="dropdown-content" style="right: 0; left: auto; min-width: 180px;">
+                        <a href="#" data-section="profile"><i class="fas fa-user"></i> Profile</a>
+                        <a href="#" data-section="settings"><i class="fas fa-cog"></i> Settings</a>
+                        <a href="#" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                    </div>
+                </div>
+                
+                <div id="authButtons">
+                    <button class="btn btn-secondary" id="loginBtn" style="padding: 0.5rem 1rem; font-size: 0.9rem;">Login</button>
+                    <button class="btn btn-primary" id="signupBtn" style="padding: 0.5rem 1rem; font-size: 0.9rem;">Sign Up</button>
+                </div>
+                
+                <button class="mobile-menu-btn" id="mobileMenuBtn">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+    
+    <!-- Authentication Section (Initially Hidden) -->
+    <div id="authSection" class="container main-content" style="display: none;">
+        <div class="auth-container">
+            <div class="auth-card">
+                <!-- Tabs for Login/Signup -->
+                <div class="auth-tabs">
+                    <div class="auth-tab active" id="login-tab">Login</div>
+                    <div class="auth-tab" id="signup-tab">Sign Up</div>
+                </div>
+                
+                <!-- Login Form -->
+                <div class="auth-content active" id="login-content">
+                    <div class="auth-header">
+                        <h2><i class="fas fa-sign-in-alt"></i> Login to Your Account</h2>
+                        <p>Welcome back! Please enter your credentials to access your account.</p>
+                    </div>
+                    
+                    <div class="success-message" id="login-success">
+                        <i class="fas fa-check-circle"></i> Account created successfully! Please login.
+                    </div>
+                    
+                    <form id="loginForm" class="auth-form">
+                        <div class="form-group">
+                            <label for="login-email">Email Address</label>
+                            <div class="input-with-icon">
+                                <i class="fas fa-envelope"></i>
+                                <input type="email" id="login-email" name="email" placeholder="Enter your email" required>
+                            </div>
+                            <div class="error-message" id="login-email-error"></div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="login-password">Password</label>
+                            <div class="input-with-icon">
+                                <i class="fas fa-lock"></i>
+                                <input type="password" id="login-password" name="password" placeholder="Enter your password" required>
+                                <i class="fas fa-eye toggle-password"></i>
+                            </div>
+                            <div class="error-message" id="login-password-error"></div>
+                        </div>
+                        
+                        <div class="form-options">
+                            <div class="remember-me">
+                                <input type="checkbox" id="remember" name="remember">
+                                <label for="remember">Remember me</label>
+                            </div>
+                            <a href="#" class="forgot-password">Forgot Password?</a>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary btn-block" id="login-btn">
+                            <i class="fas fa-sign-in-alt"></i> Login
+                        </button>
+                        
+                        <div class="auth-divider">
+                            <span>OR</span>
+                        </div>
+                        
+                        <div class="social-login">
+                            <button type="button" class="btn btn-social btn-google">
+                                <i class="fab fa-google"></i> Login with Google
+                            </button>
+                            <button type="button" class="btn btn-social btn-facebook">
+                                <i class="fab fa-facebook-f"></i> Login with Facebook
+                            </button>
+                        </div>
+                    </form>
+                    
+                    <div class="auth-footer">
+                        Don't have an account? <a href="#" id="switch-to-signup">Sign Up</a>
+                    </div>
+                </div>
+                
+                <!-- Signup Form -->
+                <div class="auth-content" id="signup-content">
+                    <div class="auth-header">
+                        <h2><i class="fas fa-user-plus"></i> Create Your Account</h2>
+                        <p>Join Jada 5 today and start winning big prizes!</p>
+                    </div>
+                    
+                    <form id="signupForm" class="auth-form">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="firstName">First Name</label>
+                                <div class="input-with-icon">
+                                    <i class="fas fa-user"></i>
+                                    <input type="text" id="firstName" name="firstName" placeholder="Enter your first name" required>
+                                </div>
+                                <div class="error-message" id="firstName-error"></div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="lastName">Last Name</label>
+                                <div class="input-with-icon">
+                                    <i class="fas fa-user"></i>
+                                    <input type="text" id="lastName" name="lastName" placeholder="Enter your last name" required>
+                                </div>
+                                <div class="error-message" id="lastName-error"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="signup-email">Email Address</label>
+                            <div class="input-with-icon">
+                                <i class="fas fa-envelope"></i>
+                                <input type="email" id="signup-email" name="email" placeholder="Enter your email" required>
+                            </div>
+                            <div class="error-message" id="signup-email-error"></div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="phone">Phone Number</label>
+                            <div class="input-with-icon">
+                                <i class="fas fa-phone"></i>
+                                <input type="tel" id="phone" name="phone" placeholder="Enter your phone number" required>
+                            </div>
+                            <div class="error-message" id="phone-error"></div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="signup-password">Password</label>
+                                <div class="input-with-icon">
+                                    <i class="fas fa-lock"></i>
+                                    <input type="password" id="signup-password" name="password" placeholder="Create a password" required>
+                                    <i class="fas fa-eye toggle-password"></i>
+                                </div>
+                                <div class="error-message" id="signup-password-error"></div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="confirmPassword">Confirm Password</label>
+                                <div class="input-with-icon">
+                                    <i class="fas fa-lock"></i>
+                                    <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Confirm your password" required>
+                                    <i class="fas fa-eye toggle-password"></i>
+                                </div>
+                                <div class="error-message" id="confirmPassword-error"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="referralCode">Referral Code (Optional)</label>
+                            <div class="input-with-icon">
+                                <i class="fas fa-user-friends"></i>
+                                <input type="text" id="referralCode" name="referralCode" placeholder="Enter referral code if you have one">
+                            </div>
+                        </div>
+                        
+                        <div class="form-group checkbox-group">
+                            <input type="checkbox" id="terms" name="terms" required>
+                            <label for="terms">I agree to the <a href="#">Terms & Conditions</a> and <a href="#">Privacy Policy</a></label>
+                            <div class="error-message" id="terms-error"></div>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary btn-block" id="signup-btn">
+                            <i class="fas fa-user-plus"></i> Create Account
+                        </button>
+                    </form>
+                    
+                    <div class="auth-footer">
+                        Already have an account? <a href="#" id="switch-to-login">Login</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Main Dashboard Content (Initially Shown) -->
+    <div id="dashboardSection">
+        <!-- Hero Section -->
+        <section class="hero">
+            <div class="container">
+                <h1>Spin & Win with Jada 5!</h1>
+                <p>Try our new spinning wheel game for a chance to win instant prizes. Choose your wheel, spin, and win!</p>
+                <div class="cta-buttons">
+                    <a href="#wheel-games" class="btn btn-primary">Play Now</a>
+                    <a href="#" class="btn btn-secondary">Learn More</a>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Main Content -->
+        <div class="container main-content">
+            <div class="dashboard">
+                <!-- Sidebar -->
+                <div class="sidebar">
+                    <ul class="sidebar-menu">
+                        <li><a href="#" class="active" data-section="dashboard"><i class="fas fa-home"></i> Dashboard</a></li>
+                        <li><a href="#" data-section="wallet"><i class="fas fa-wallet"></i> My Wallet</a></li>
+                        <li><a href="#"><i class="fas fa-ticket-alt"></i> My Tickets</a></li>
+                        <li><a href="#"><i class="fas fa-history"></i> Draw History</a></li>
+                        <li><a href="#" data-section="referrals"><i class="fas fa-user-friends"></i> Referrals</a></li>
+                        <li><a href="#"><i class="fas fa-gift"></i> Promotions</a></li>
+                        <li><a href="#" data-section="settings"><i class="fas fa-cog"></i> Settings</a></li>
+                        <li><a href="#"><i class="fas fa-question-circle"></i> Help</a></li>
+                    </ul>
+                </div>
+
+                <!-- Dashboard Content -->
+                <div class="dashboard-content">
+                    <!-- Welcome Banner -->
+                    <div class="welcome-banner dashboard-section">
+                        <h1 id="welcome-user">Welcome to Jada 5!</h1>
+                        <p>Try our new spinning wheel games for a chance to win instant prizes!</p>
+                    </div>
+
+                    <!-- Stats Cards -->
+                    <div class="stats-cards dashboard-section">
+                        <div class="stat-card">
+                            <i class="fas fa-ticket-alt"></i>
+                            <h3>TODAY'S SPINS</h3>
+                            <div class="value">0</div>
+                        </div>
+                        <div class="stat-card">
+                            <i class="fas fa-calendar-week"></i>
+                            <h3>TOTAL SPINS</h3>
+                            <div class="value">0</div>
+                        </div>
+                        <div class="stat-card">
+                            <i class="fas fa-trophy"></i>
+                            <h3>TOTAL WINNINGS</h3>
+                            <div class="value">0 UGX</div>
+                        </div>
+                        <div class="stat-card">
+                            <i class="fas fa-user-friends"></i>
+                            <h3>REFERRAL EARNINGS</h3>
+                            <div class="value">0 UGX</div>
+                        </div>
+                    </div>
+
+                    <!-- Spinning Wheel Games Section -->
+                    <div id="wheel-games" class="draws-section dashboard-section">
+                        <h2 class="section-title">Spinning Wheel Games</h2>
+                        <div class="wheel-categories">
+                            <!-- Daily Spin -->
+                            <div class="wheel-category-card">
+                                <div>
+                                    <h3>Daily Spin</h3>
+                                    <div class="price">Wheel Price: 26,000 UGX</div>
+                                    <div class="prize-pool">Prize Pool: 26,000 UGX</div>
+                                    <div class="countdown"><i class="fas fa-clock"></i> 15 days remaining</div>
+                                    <ul style="text-align: left; margin-bottom: 1rem; list-style-position: inside;">
+                                        <li>1st prize: 1,200 UGX</li>
+                                        <li>2nd prize: 900 UGX</li>
+                                        <li>3rd prize: 600 UGX</li>
+                                        <li>4th prize: 300 UGX</li>
+                                        <li>5th prize: 0 UGX</li>
+                                    </ul>
+                                    <p style="margin-bottom: 1rem; font-size: 0.9rem; color: var(--text-light);">3 spins per day for 15 days</p>
+                                </div>
+                                <a href="#" class="buy-spin-btn" data-game="daily-spin">Buy & Spin</a>
+                            </div>
+                            
+                            <!-- Mega Spin -->
+                            <div class="wheel-category-card">
+                                <div>
+                                    <h3>Mega Spin</h3>
+                                    <div class="price">Wheel Price: 53,000 UGX</div>
+                                    <div class="prize-pool">Prize Pool: 53,000 UGX</div>
+                                    <div class="countdown"><i class="fas fa-clock"></i> 15 days remaining</div>
+                                    <ul style="text-align: left; margin-bottom: 1rem; list-style-position: inside;">
+                                        <li>1st prize: 2,200 UGX</li>
+                                        <li>2nd prize: 1,800 UGX</li>
+                                        <li>3rd prize: 1,400 UGX</li>
+                                        <li>4th prize: 1,000 UGX</li>
+                                        <li>5th prize: 500 UGX</li>
+                                        <li>6th prize: 0 UGX</li>
+                                    </ul>
+                                    <p style="margin-bottom: 1rem; font-size: 0.9rem; color: var(--text-light);">3 spins per day for 15 days</p>
+                                </div>
+                                <a href="#" class="buy-spin-btn" data-game="mega-spin">Buy & Spin</a>
+                            </div>
+                            
+                            <!-- Premium Spin -->
+                            <div class="wheel-category-card">
+                                <div>
+                                    <h3>Premium Spin</h3>
+                                    <div class="price">Wheel Price: 120,000 UGX</div>
+                                    <div class="prize-pool">Prize Pool: 120,000 UGX</div>
+                                    <div class="countdown"><i class="fas fa-clock"></i> 15 days remaining</div>
+                                    <ul style="text-align: left; margin-bottom: 1rem; list-style-position: inside;">
+                                        <li>1st prize: 5,000 UGX</li>
+                                        <li>2nd prize: 4,000 UGX</li>
+                                        <li>3rd prize: 3,000 UGX</li>
+                                        <li>4th prize: 2,000 UGX</li>
+                                        <li>5th prize: 1,000 UGX</li>
+                                        <li>6th prize: 0 UGX</li>
+                                    </ul>
+                                    <p style="margin-bottom: 1rem; font-size: 0.9rem; color: var(--text-light);">3 spins per day for 15 days</p>
+                                </div>
+                                <a href="#" class="buy-spin-btn" data-game="premium-spin">Buy & Spin</a>
+                            </div>
+                            
+                            <!-- Ultimate Spin -->
+                            <div class="wheel-category-card">
+                                <div>
+                                    <h3>Ultimate Spin</h3>
+                                    <div class="price">Wheel Price: 215,000 UGX</div>
+                                    <div class="prize-pool">Prize Pool: 215,000 UGX</div>
+                                    <div class="countdown"><i class="fas fa-clock"></i> 15 days remaining</div>
+                                    <ul style="text-align: left; margin-bottom: 1rem; list-style-position: inside;">
+                                        <li>1st prize: 9,000 UGX</li>
+                                        <li>2nd prize: 7,000 UGX</li>
+                                        <li>3rd prize: 5,000 UGX</li>
+                                        <li>4th prize: 3,000 UGX</li>
+                                        <li>5th prize: 1,000 UGX</li>
+                                        <li>6th prize: 0 UGX</li>
+                                    </ul>
+                                    <p style="margin-bottom: 1rem; font-size: 0.9rem; color: var(--text-light);">3 spins per day for 15 days</p>
+                                </div>
+                                <a href="#" class="buy-spin-btn" data-game="ultimate-spin">Buy & Spin</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Current Draws -->
+                    <div class="draws-section dashboard-section">
+                        <h2 class="section-title">Current Draws</h2>
+                        <div class="draw-cards">
+                            <div class="draw-card">
+                                <div class="draw-type">Daily Draw</div>
+                                <div class="prize">450,000 UGX</div>
+                                <div class="countdown">Ends in: 05:42:18</div>
+                                <div class="ticket-price">1,000 UGX per ticket</div>
+                                <button class="btn purchase-btn" data-draw="daily">Purchase Ticket</button>
+                            </div>
+                            <div class="draw-card">
+                                <div class="draw-type">Weekly Draw</div>
+                                <div class="prize">1,200,000 UGX</div>
+                                <div class="countdown">Ends in: 3 days, 05:42:18</div>
+                                <div class="ticket-price">1,000 UGX per ticket</div>
+                                <button class="btn purchase-btn" data-draw="weekly">Purchase Ticket</button>
+                            </div>
+                            <div class="draw-card">
+                                <div class="draw-type">Monthly Draw</div>
+                                <div class="prize">3,500,000 UGX</div>
+                                <div class="countdown">Ends in: 18 days, 05:42:18</div>
+                                <div class="ticket-price">1,000 UGX per ticket</div>
+                                <button class="btn purchase-btn" data-draw="monthly">Purchase Ticket</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Recent Tickets -->
+                    <div class="tickets-section dashboard-section">
+                        <h2 class="section-title">Your Recent Tickets</h2>
+                        <div class="ticket-cards">
+                            <div class="ticket-card">
+                                <div class="draw-type">Daily Draw</div>
+                                <div class="ticket-code">X8J9K32L</div>
+                                <div class="purchase-date">Purchased: Today, 10:23 AM</div>
+                            </div>
+                            <div class="ticket-card">
+                                <div class="draw-type">Weekly Draw</div>
+                                <div class="ticket-code">M7N2P45Q</div>
+                                <div class="purchase-date">Purchased: Yesterday, 4:15 PM</div>
+                            </div>
+                            <div class="ticket-card">
+                                <div class="draw-type">Monthly Draw</div>
+                                <div class="ticket-code">R93S6T18</div>
+                                <div class="purchase-date">Purchased: 2 days ago, 9:40 AM</div>
+                            </div>
+                            <div class="ticket-card winner">
+                                <div class="draw-type">Weekly Draw</div>
+                                <div class="ticket-code">W1NN3R88</div>
+                                <div class="purchase-date">Purchased: 5 days ago, 2:30 PM</div>
+                                <div class="prize-won">You won: 50,000 UGX</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Referrals Section -->
+                    <div id="referrals-section" class="referrals-section dashboard-section">
+                        <div class="welcome-banner">
+                            <h1>Referral Program</h1>
+                            <p>Earn 8% commission on your referrals' first deposits!</p>
+                        </div>
+
+                        <!-- Referral Overview -->
+                        <div class="referral-overview">
+                            <div class="referral-banner">
+                                <h1><i class="fas fa-gift"></i> Refer Friends & Earn Big!</h1>
+                                <p>Invite your friends to join Jada 5 and earn <span class="highlight">8% commission</span> on their first deposit! Your friends will also get <span class="highlight">1,000 UGX</span> free bonus!</p>
+                                <div class="referral-steps">
+                                    <div class="referral-step">
+                                        <div class="step-icon">
+                                            <i class="fas fa-link"></i>
+                                        </div>
+                                        <div class="step-text">
+                                            <h3>Share Your Link</h3>
+                                            <p>Copy your unique referral link</p>
+                                        </div>
+                                    </div>
+                                    <div class="referral-step">
+                                        <div class="step-icon">
+                                            <i class="fas fa-user-plus"></i>
+                                        </div>
+                                        <div class="step-text">
+                                            <h3>Friend Joins</h3>
+                                            <p>Your friend signs up using your link</p>
+                                        </div>
+                                    </div>
+                                    <div class="referral-step">
+                                        <div class="step-icon">
+                                            <i class="fas fa-coins"></i>
+                                        </div>
+                                        <div class="step-text">
+                                            <h3>Earn Rewards</h3>
+                                            <p>Get 8% of their first deposit</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="referral-stats">
+                                <div class="referral-stat-card">
+                                    <div class="stat-icon referrals">
+                                        <i class="fas fa-users"></i>
+                                    </div>
+                                    <div class="stat-info">
+                                        <h3>Total Referrals</h3>
+                                        <p id="total-referrals">0</p>
+                                    </div>
+                                </div>
+                                <div class="referral-stat-card">
+                                    <div class="stat-icon active">
+                                        <i class="fas fa-user-check"></i>
+                                    </div>
+                                    <div class="stat-info">
+                                        <h3>Active Referrals</h3>
+                                        <p id="active-referrals">0</p>
+                                    </div>
+                                </div>
+                                <div class="referral-stat-card">
+                                    <div class="stat-icon earnings">
+                                        <i class="fas fa-money-bill-wave"></i>
+                                    </div>
+                                    <div class="stat-info">
+                                        <h3>Total Earnings</h3>
+                                        <p id="total-earnings">0 UGX</p>
+                                    </div>
+                                </div>
+                                <div class="referral-stat-card">
+                                    <div class="stat-icon pending">
+                                        <i class="fas fa-clock"></i>
+                                    </div>
+                                    <div class="stat-info">
+                                        <h3>Pending Earnings</h3>
+                                        <p id="pending-earnings">0 UGX</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Referral Link Section -->
+                        <div class="referral-link-section">
+                            <h2><i class="fas fa-link"></i> Your Referral Link</h2>
+                            <div class="referral-link-container">
+                                <div class="referral-link">
+                                    <input type="text" id="referralLink" value="https://jada5.com/signup?ref=DAVID123" readonly>
+                                    <button class="btn btn-copy" id="copyLinkBtn">
+                                        <i class="fas fa-copy"></i> Copy
+                                    </button>
+                                </div>
+                                <div class="referral-code">
+                                    <span>Your Referral Code:</span>
+                                    <strong id="referral-code">DAVID123</strong>
+                                </div>
+                            </div>
+                            <div class="share-options">
+                                <h3>Share via:</h3>
+                                <div class="social-share-buttons">
+                                    <button class="btn-social whatsapp" data-social="whatsapp">
+                                        <i class="fab fa-whatsapp"></i> WhatsApp
+                                    </button>
+                                    <button class="btn-social facebook" data-social="facebook">
+                                        <i class="fab fa-facebook-f"></i> Facebook
+                                    </button>
+                                    <button class="btn-social twitter" data-social="twitter">
+                                        <i class="fab fa-twitter"></i> Twitter
+                                    </button>
+                                    <button class="btn-social telegram" data-social="telegram">
+                                        <i class="fab fa-telegram-plane"></i> Telegram
+                                    </button>
+                                    <button class="btn-social email" data-social="email">
+                                        <i class="fas fa-envelope"></i> Email
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Referral Earnings -->
+                        <div class="referral-earnings-section">
+                            <div class="section-header">
+                                <h2><i class="fas fa-user-friends"></i> Your Referrals</h2>
+                                <div class="section-actions">
+                                    <div class="search-box">
+                                        <input type="text" placeholder="Search referrals...">
+                                        <i class="fas fa-search"></i>
+                                    </div>
+                                    <div class="filter-dropdown">
+                                        <button class="btn btn-filter">
+                                            <i class="fas fa-filter"></i> Filter <i class="fas fa-chevron-down"></i>
+                                        </button>
+                                        <div class="filter-menu">
+                                            <label><input type="checkbox" checked> All</label>
+                                            <label><input type="checkbox"> Active</label>
+                                            <label><input type="checkbox"> Inactive</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="referral-table-container">
+                                <table class="referral-table">
+                                    <thead>
+                                        <tr>
+                                            <th>User</th>
+                                            <th>Joined Date</th>
+                                            <th>First Deposit</th>
+                                            <th>Your Commission</th>
+                                            <th>Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="referrals-table-body">
+                                        <!-- Referrals will be loaded here -->
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <div class="pagination">
+                                <button class="btn-page" disabled><i class="fas fa-chevron-left"></i></button>
+                                <button class="btn-page active">1</button>
+                                <button class="btn-page">2</button>
+                                <button class="btn-page">3</button>
+                                <button class="btn-page"><i class="fas fa-chevron-right"></i></button>
+                            </div>
+                        </div>
+
+                        <!-- Referral FAQ -->
+                        <div class="referral-faq">
+                            <h2><i class="fas fa-question-circle"></i> Frequently Asked Questions</h2>
+                            <div class="faq-container">
+                                <div class="faq-item">
+                                    <div class="faq-question">
+                                        <h3>How does the referral program work?</h3>
+                                        <i class="fas fa-chevron-down"></i>
+                                    </div>
+                                    <div class="faq-answer">
+                                        <p>Our referral program rewards you for bringing new users to Jada 5. When someone signs up using your referral link and makes their first deposit, you'll receive 8% of that deposit amount as a commission. For example, if your friend deposits 10,000 UGX, you'll earn 800 UGX in commission.</p>
+                                    </div>
+                                </div>
+                                <div class="faq-item">
+                                    <div class="faq-question">
+                                        <h3>What does my friend get when they sign up?</h3>
+                                        <i class="fas fa-chevron-down"></i>
+                                    </div>
+                                    <div class="faq-answer">
+                                        <p>Your friend will receive a 1,000 UGX bonus when they sign up using your referral link and verify their account. This bonus can be used to play any game on our platform.</p>
+                                    </div>
+                                </div>
+                                <div class="faq-item">
+                                    <div class="faq-question">
+                                        <h3>When do I receive my referral commission?</h3>
+                                        <i class="fas fa-chevron-down"></i>
+                                    </div>
+                                    <div class="faq-answer">
+                                        <p>Referral commissions are credited to your account automatically once your referred friend makes their first deposit. The funds will be available in your wallet immediately and can be used for ticket purchases or withdrawn.</p>
+                                    </div>
+                                </div>
+                                <div class="faq-item">
+                                    <div class="faq-question">
+                                        <h3>Is there a limit to how many people I can refer?</h3>
+                                        <i class="fas fa-chevron-down"></i>
+                                    </div>
+                                    <div class="faq-answer">
+                                        <p>No, there's no limit to the number of people you can refer. The more friends you bring to Jada 5, the more you can earn!</p>
+                                    </div>
+                                </div>
+                                <div class="faq-item">
+                                    <div class="faq-question">
+                                        <h3>Can I withdraw my referral earnings?</h3>
+                                        <i class="fas fa-chevron-down"></i>
+                                    </div>
+                                    <div class="faq-answer">
+                                        <p>Yes, referral earnings are added directly to your main wallet balance and can be withdrawn using any of our supported withdrawal methods.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Wallet Section -->
+                    <div id="wallet-section" class="wallet-section dashboard-section">
+                        <div class="welcome-banner">
+                            <h1>My Wallet</h1>
+                            <p>Manage your deposits and withdrawals easily</p>
+                        </div>
+
+                        <div class="wallet-card">
+                            <div class="balance-display">
+                                <p>Your Current Balance</p>
+                                <div class="balance-amount" id="balance">UGX 0.00</div>
+                            </div>
+                            
+                            <ul class="nav-tabs">
+                                <li><a href="#deposit" class="active">Deposit</a></li>
+                                <li><a href="#withdraw">Withdraw</a></li>
+                                <li><a href="#transactions">Transactions</a></li>
+                            </ul>
+                            
+                            <div id="deposit" class="tab-content active">
+                                <h2 class="section-title">Deposit Funds</h2>
+                                <p>Click the button below to pay via Pesapal:</p>
+                                
+                                <div class="iframe-container">
+                                    <iframe 
+                                        width="300" 
+                                        height="50" 
+                                        src="https://store.pesapal.com/embed-code?pageUrl=https://store.pesapal.com/coldtechltd" 
+                                        frameborder="0" 
+                                        scrolling="no">
+                                    </iframe>
+                                </div>
+                                
+                                <div id="deposit-alert"></div>
+
+                                <!-- Demo only button -->
+                                <button id="simulate-deposit" style="margin-top: 20px; background-color: #27ae60;">
+                                    Simulate Deposit (Demo Only)
+                                </button>
+                            </div>
+                            
+                            <div id="withdraw" class="tab-content">
+                                <h2 class="section-title">Withdraw Funds</h2>
+                                <form id="withdrawal-form">
+                                    <div class="form-group">
+                                        <label for="withdraw-phone">Phone Number:</label>
+                                        <input type="text" id="withdraw-phone" name="phone" placeholder="+2567XXXXXXX" required class="form-control">
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label for="withdraw-amount">Amount (UGX):</label>
+                                        <input type="number" id="withdraw-amount" name="amount" min="1" required class="form-control">
+                                    </div>
+                                    
+                                    <button type="submit" class="btn purchase-btn">Request Withdrawal</button>
+                                </form>
+                                
+                                <div id="withdraw-alert"></div>
+                            </div>
+                            
+                            <div id="transactions" class="tab-content">
+                                <h2 class="section-title">Transaction History</h2>
+                                <table class="transaction-history">
+                                    <thead>
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Transaction ID</th>
+                                            <th>Type</th>
+                                            <th>Status</th>
+                                            <th>Amount (UGX)</th>
+                                            <th>Date</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="transactions-body">
+                                        <!-- Transactions will be loaded here -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Settings Section -->
+                    <div id="settings-section" class="settings-section dashboard-section">
+                        <div class="welcome-banner">
+                            <h1>Account Settings</h1>
+                            <p>Manage your account settings and preferences</p>
+                        </div>
+
+                        <div class="settings-card">
+                            <h2 class="section-title">Profile Information</h2>
+                            <form id="profile-form">
+                                <div class="form-group">
+                                    <label for="profile-firstName">First Name</label>
+                                    <input type="text" id="profile-firstName" class="form-control" placeholder="Enter your first name">
+                                </div>
+                                <div class="form-group">
+                                    <label for="profile-lastName">Last Name</label>
+                                    <input type="text" id="profile-lastName" class="form-control" placeholder="Enter your last name">
+                                </div>
+                                <div class="form-group">
+                                    <label for="profile-email">Email Address</label>
+                                    <input type="email" id="profile-email" class="form-control" placeholder="Enter your email">
+                                </div>
+                                <div class="form-group">
+                                    <label for="profile-phone">Phone Number</label>
+                                    <input type="tel" id="profile-phone" class="form-control" placeholder="Enter your phone number">
+                                </div>
+                                <button type="submit" class="btn purchase-btn">Save Changes</button>
+                            </form>
+                        </div>
+
+                        <div class="settings-card">
+                            <h2 class="section-title">Change Password</h2>
+                            <form id="change-password-form">
+                                <div class="form-group">
+                                    <label for="current-password">Current Password</label>
+                                    <input type="password" id="current-password" class="form-control" placeholder="Enter current password">
+                                </div>
+                                <div class="form-group">
+                                    <label for="new-password">New Password</label>
+                                    <input type="password" id="new-password" class="form-control" placeholder="Enter new password">
+                                </div>
+                                <div class="form-group">
+                                    <label for="confirm-new-password">Confirm New Password</label>
+                                    <input type="password" id="confirm-new-password" class="form-control" placeholder="Confirm new password">
+                                </div>
+                                <button type="submit" class="btn purchase-btn">Change Password</button>
+                            </form>
+                        </div>
+
+                        <div class="settings-card danger-zone">
+                            <h3>Danger Zone</h3>
+                            <p>Once you delete your account, there is no going back. Please be certain.</p>
+                            <button id="delete-account-btn" class="btn" style="background-color: var(--danger);">Delete Account</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Jada 5</h3>
+                    <p>Your trusted platform for exciting spinning wheel games and lottery draws.</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>Quick Links</h3>
+                    <ul class="footer-links">
+                        <li><a href="#">Home</a></li>
+                        <li><a href="#">Games</a></li>
+                        <li><a href="#">Results</a></li>
+                        <li><a href="#">About Us</a></li>
+                        <li><a href="#">Contact</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>Support</h3>
+                    <ul class="footer-links">
+                        <li><a href="#">FAQ</a></li>
+                        <li><a href="#">Terms of Service</a></li>
+                        <li><a href="#">Privacy Policy</a></li>
+                        <li><a href="#">Responsible Gaming</a></li>
+                        <li><a href="#">Help Center</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>Contact Us</h3>
+                    <ul class="footer-links">
+                        <li><i class="fas fa-envelope"></i> support@jada5.com</li>
+                        <li><i class="fas fa-phone"></i> +256 394 528718</li>
+                        <li><i class="fas fa-map-marker-alt"></i> Kampala, Uganda</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2025 Jada 5. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+    
+    <!-- Purchase Ticket Modal -->
+    <div id="purchaseModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <h2 class="modal-title">Purchase Tickets</h2>
+            
+            <div class="purchase-summary">
+                <div class="summary-item">
+                    <span>Draw Type:</span>
+                    <span id="modal-draw-type">Daily Draw</span>
+                </div>
+                <div class="summary-item">
+                    <span>Ticket Price:</span>
+                    <span>1,000 UGX</span>
+                </div>
+                <div class="summary-item">
+                    <span>Quantity:</span>
+                    <span id="modal-quantity">1</span>
+                </div>
+                <div class="summary-item summary-total">
+                    <span>Total:</span>
+                    <span id="modal-total">1,000 UGX</span>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="quantity">Number of Tickets</label>
+                <input type="number" id="quantity" class="form-control" min="1" max="10" value="1">
+            </div>
+            
+            <button class="btn purchase-btn" style="width: 100%;">Confirm Purchase</button>
+        </div>
+    </div>
+    
+    <!-- Delete Account Confirmation Modal -->
+    <div id="deleteAccountModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <h2 class="modal-title">Delete Account</h2>
+            
+            <div class="alert alert-error">
+                <i class="fas fa-exclamation-triangle"></i> This action cannot be undone.
+            </div>
+            
+            <p>Are you sure you want to delete your account? All your data, including tickets, transaction history, and winnings will be permanently removed.</p>
+            
+            <div class="form-group">
+                <label for="delete-password">Enter your password to confirm:</label>
+                <input type="password" id="delete-password" class="form-control" placeholder="Enter your password">
+            </div>
+            
+            <div class="form-group">
+                <button id="confirm-delete-account" class="btn" style="background-color: var(--danger); width: 100%;">Permanently Delete My Account</button>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Check if user is logged in
+        function checkAuthStatus() {
+            const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+            
+            if (isLoggedIn) {
+                document.getElementById('authSection').style.display = 'none';
+                document.getElementById('dashboardSection').style.display = 'block';
+                document.getElementById('userProfile').style.display = 'flex';
+                document.getElementById('authButtons').style.display = 'none';
+                
+                // Load user data if available
+                const userData = JSON.parse(localStorage.getItem('userData') || '{}');
+                if (userData.firstName) {
+                    document.querySelector('.user-name').textContent = userData.firstName;
+                    document.querySelector('.user-avatar').textContent = userData.firstName.charAt(0);
+                    document.getElementById('welcome-user').textContent = `Welcome back, ${userData.firstName}!`;
+                    
+                    // Set referral code based on user name
+                    const referralCode = userData.firstName.toUpperCase() + '123';
+                    document.getElementById('referral-code').textContent = referralCode;
+                    document.getElementById('referralLink').value = `https://jada5.com/signup?ref=${referralCode}`;
+                    
+                    // Populate profile form
+                    document.getElementById('profile-firstName').value = userData.firstName || '';
+                    document.getElementById('profile-lastName').value = userData.lastName || '';
+                    document.getElementById('profile-email').value = userData.email || '';
+                    document.getElementById('profile-phone').value = userData.phone || '';
+                }
+                
+                // Load referral data
+                loadReferralData();
+            } else {
+                document.getElementById('authSection').style.display = 'block';
+                document.getElementById('dashboardSection').style.display = 'none';
+                document.getElementById('userProfile').style.display = 'none';
+                document.getElementById('authButtons').style.display = 'flex';
+            }
+        }
+
+        // Load referral data
+        function loadReferralData() {
+            // Get referral data from localStorage or set defaults
+            const referralData = JSON.parse(localStorage.getItem('referralData') || '{"total": 0, "active": 0, "earnings": 0, "pending": 0, "referrals": []}');
+            
+            // Update referral stats
+            document.getElementById('total-referrals').textContent = referralData.total;
+            document.getElementById('active-referrals').textContent = referralData.active;
+            document.getElementById('total-earnings').textContent = referralData.earnings.toLocaleString() + ' UGX';
+            document.getElementById('pending-earnings').textContent = referralData.pending.toLocaleString() + ' UGX';
+            
+            // Update referrals table
+            const referralsTableBody = document.getElementById('referrals-table-body');
+            referralsTableBody.innerHTML = '';
+            
+            if (referralData.referrals.length === 0) {
+                referralsTableBody.innerHTML = `
+                    <tr>
+                        <td colspan="5" style="text-align: center; padding: 2rem;">
+                            <i class="fas fa-user-friends" style="font-size: 2rem; color: var(--text-light); margin-bottom: 1rem;"></i>
+                            <p>You haven't referred anyone yet. Share your link to start earning!</p>
+                        </td>
+                    </tr>
+                `;
+            } else {
+                referralData.referrals.forEach(referral => {
+                    const row = document.createElement('tr');
+                    
+                    row.innerHTML = `
+                        <td class="user-cell">
+                            <div class="user-avatar">${referral.name.charAt(0)}</div>
+                            <div class="user-info">
+                                <div class="user-name">${referral.name}</div>
+                                <div class="user-email">${referral.email}</div>
+                            </div>
+                        </td>
+                        <td>${referral.date}</td>
+                        <td>${referral.deposit ? referral.deposit.toLocaleString() + ' UGX' : 'No deposit yet'}</td>
+                        <td>${referral.commission ? referral.commission.toLocaleString() + ' UGX' : '0 UGX'}</td>
+                        <td><span class="status ${referral.status}">${referral.status}</span></td>
+                    `;
+                    
+                    referralsTableBody.appendChild(row);
+                });
+            }
+        }
+
+        // Theme Switcher
+        const themeSwitcher = document.getElementById('themeSwitcher');
+        const themeIcon = themeSwitcher.querySelector('i');
+        
+        themeSwitcher.addEventListener('click', () => {
+            document.body.classList.toggle('dark-theme');
+            
+            if (document.body.classList.contains('dark-theme')) {
+                themeIcon.classList.remove('fa-moon');
+                themeIcon.classList.add('fa-sun');
+                localStorage.setItem('theme', 'dark');
+            } else {
+                themeIcon.classList.remove('fa-sun');
+                themeIcon.classList.add('fa-moon');
+                localStorage.setItem('theme', 'light');
+            }
+        });
+
+        // Check for saved theme preference
+        if (localStorage.getItem('theme') === 'dark') {
+            document.body.classList.add('dark-theme');
+            themeIcon.classList.remove('fa-moon');
+            themeIcon.classList.add('fa-sun');
+        }
+
+        // Mobile Menu Toggle
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const navLinks = document.getElementById('mainNav');
+        
+        mobileMenuBtn.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+        });
+
+        // Navigation between sections
+        function navigateToSection(sectionId) {
+            // Hide all sections
+            document.querySelectorAll('.dashboard-section').forEach(section => {
+                section.style.display = 'none';
+            });
+            
+            // Show the requested section
+            document.getElementById(sectionId).style.display = 'block';
+            
+            // Update active link in sidebar
+            document.querySelectorAll('.sidebar-menu a').forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('data-section') === sectionId) {
+                    link.classList.add('active');
+                }
+            });
+        }
+
+        // Sidebar navigation
+        document.querySelectorAll('.sidebar-menu a[data-section]').forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const section = link.getAttribute('data-section');
+                navigateToSection(`${section}-section`);
+            });
+        });
+
+        // User dropdown navigation
+        document.querySelectorAll('.user-profile .dropdown-content a[data-section]').forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const section = link.getAttribute('data-section');
+                navigateToSection(`${section}-section`);
+            });
+        });
+
+        // Wallet button in header
+        document.getElementById('walletBtn').addEventListener('click', () => {
+            navigateToSection('wallet-section');
+        });
+
+        // Copy referral link functionality
+        document.getElementById('copyLinkBtn').addEventListener('click', () => {
+            const referralLink = document.getElementById('referralLink');
+            referralLink.select();
+            document.execCommand('copy');
+            
+            // Show confirmation
+            const originalText = document.getElementById('copyLinkBtn').innerHTML;
+            document.getElementById('copyLinkBtn').innerHTML = '<i class="fas fa-check"></i> Copied!';
+            
+            setTimeout(() => {
+                document.getElementById('copyLinkBtn').innerHTML = originalText;
+            }, 2000);
+        });
+
+        // Share referral link on social media
+        document.querySelectorAll('.btn-social').forEach(button => {
+            button.addEventListener('click', () => {
+                const platform = button.getAttribute('data-social');
+                const referralLink = encodeURIComponent(document.getElementById('referralLink').value);
+                let shareUrl = '';
+                
+                switch(platform) {
+                    case 'whatsapp':
+                        shareUrl = `https://wa.me/?text=Join%20Jada%205%20and%20get%201,000%20UGX%20free%20bonus!%20Use%20my%20referral%20link:%20${referralLink}`;
+                        break;
+                    case 'facebook':
+                        shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${referralLink}`;
+                        break;
+                    case 'twitter':
+                        shareUrl = `https://twitter.com/intent/tweet?text=Join%20Jada%205%20and%20get%201,000%20UGX%20free%20bonus!&url=${referralLink}`;
+                        break;
+                    case 'telegram':
+                        shareUrl = `https://t.me/share/url?url=${referralLink}&text=Join%20Jada%205%20and%20get%201,000%20UGX%20free%20bonus!`;
+                        break;
+                    case 'email':
+                        shareUrl = `mailto:?subject=Join%20Jada%205&body=Join%20Jada%205%20and%20get%201,000%20UGX%20free%20bonus!%20Use%20my%20referral%20link:%20${referralLink}`;
+                        break;
+                }
+                
+                window.open(shareUrl, '_blank');
+            });
+        });
+
+        // FAQ toggle functionality
+        document.querySelectorAll('.faq-question').forEach(question => {
+            question.addEventListener('click', () => {
+                const answer = question.nextElementSibling;
+                answer.classList.toggle('active');
+                
+                const icon = question.querySelector('i');
+                if (answer.classList.contains('active')) {
+                    icon.classList.remove('fa-chevron-down');
+                    icon.classList.add('fa-chevron-up');
+                } else {
+                    icon.classList.remove('fa-chevron-up');
+                    icon.classList.add('fa-chevron-down');
+                }
+            });
+        });
+
+        // Auth Tab Switching
+        document.getElementById('login-tab').addEventListener('click', () => {
+            document.querySelectorAll('.auth-tab').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.auth-content').forEach(content => content.classList.remove('active'));
+            document.getElementById('login-tab').classList.add('active');
+            document.getElementById('login-content').classList.add('active');
+        });
+
+        document.getElementById('signup-tab').addEventListener('click', () => {
+            document.querySelectorAll('.auth-tab').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.auth-content').forEach(content => content.classList.remove('active'));
+            document.getElementById('signup-tab').classList.add('active');
+            document.getElementById('signup-content').classList.add('active');
+        });
+
+        document.getElementById('switch-to-signup').addEventListener('click', (e) => {
+            e.preventDefault();
+            document.querySelectorAll('.auth-tab').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.auth-content').forEach(content => content.classList.remove('active'));
+            document.getElementById('signup-tab').classList.add('active');
+            document.getElementById('signup-content').classList.add('active');
+        });
+
+        document.getElementById('switch-to-login').addEventListener('click', (e) => {
+            e.preventDefault();
+            document.querySelectorAll('.auth-tab').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.auth-content').forEach(content => content.classList.remove('active'));
+            document.getElementById('login-tab').classList.add('active');
+            document.getElementById('login-content').classList.add('active');
+        });
+
+        // Toggle Password Visibility
+        document.querySelectorAll('.toggle-password').forEach(icon => {
+            icon.addEventListener('click', function() {
+                const input = this.previousElementSibling;
+                if (input.type === 'password') {
+                    input.type = 'text';
+                    this.classList.remove('fa-eye');
+                    this.classList.add('fa-eye-slash');
+                } else {
+                    input.type = 'password';
+                    this.classList.remove('fa-eye-slash');
+                    this.classList.add('fa-eye');
+                }
+            });
+        });
+
+        // Login Form Submission
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+            
+            // Simple validation
+            if (!email || !password) {
+                alert('Please fill in all fields');
+                return;
+            }
+            
+            // Simulate login process
+            document.getElementById('login-btn').disabled = true;
+            document.getElementById('login-btn').innerHTML = '<span class="spinner"></span> Logging in...';
+            
+            setTimeout(() => {
+                // Save login state
+                localStorage.setItem('isLoggedIn', 'true');
+                
+                // Save user data
+                const userData = {
+                    firstName: email.split('@')[0], // Use part of email as name for demo
+                    lastName: 'User',
+                    email: email
+                };
+                localStorage.setItem('userData', JSON.stringify(userData));
+                
+                // Update UI
+                checkAuthStatus();
+                
+                // Reset button
+                document.getElementById('login-btn').disabled = false;
+                document.getElementById('login-btn').innerHTML = '<i class="fas fa-sign-in-alt"></i> Login';
+            }, 1500);
+        });
+
+        // Signup Form Submission
+        document.getElementById('signupForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const firstName = document.getElementById('firstName').value;
+            const lastName = document.getElementById('lastName').value;
+            const email = document.getElementById('signup-email').value;
+            const phone = document.getElementById('phone').value;
+            const password = document.getElementById('signup-password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            const referralCode = document.getElementById('referralCode').value;
+            const terms = document.getElementById('terms').checked;
+            
+            // Simple validation
+            if (!firstName || !lastName || !email || !phone || !password || !confirmPassword) {
+                alert('Please fill in all required fields');
+                return;
+            }
+            
+            if (password !== confirmPassword) {
+                alert('Passwords do not match');
+                return;
+            }
+            
+            if (!terms) {
+                alert('Please agree to the Terms & Conditions');
+                return;
+            }
+            
+            // Simulate signup process
+            document.getElementById('signup-btn').disabled = true;
+            document.getElementById('signup-btn').innerHTML = '<span class="spinner"></span> Creating Account...';
+            
+            setTimeout(() => {
+                // Save user data
+                const userData = {
+                    firstName: firstName,
+                    lastName: lastName,
+                    email: email,
+                    phone: phone
+                };
+                localStorage.setItem('userData', JSON.stringify(userData));
+                
+                // Initialize wallet balance to 0 for new users
+                localStorage.setItem('walletBalance', '1000'); // Give 1000 UGX bonus
+                
+                // If referral code was provided, process referral
+                if (referralCode) {
+                    processReferral(referralCode, firstName, email);
+                }
+                
+                // Show success message on login form
+                document.getElementById('login-success').style.display = 'block';
+                
+                // Switch to login tab
+                document.querySelectorAll('.auth-tab').forEach(tab => tab.classList.remove('active'));
+                document.querySelectorAll('.auth-content').forEach(content => content.classList.remove('active'));
+                document.getElementById('login-tab').classList.add('active');
+                document.getElementById('login-content').classList.add('active');
+                
+                // Pre-fill login form
+                document.getElementById('login-email').value = email;
+                
+                // Reset button
+                document.getElementById('signup-btn').disabled = false;
+                document.getElementById('signup-btn').innerHTML = '<i class="fas fa-user-plus"></i> Create Account';
+            }, 1500);
+        });
+
+        // Process referral when someone signs up with a referral code
+        function processReferral(referralCode, referredName, referredEmail) {
+            // Get referral data from localStorage
+            const referralData = JSON.parse(localStorage.getItem('referralData') || '{"total": 0, "active": 0, "earnings": 0, "pending": 0, "referrals": []}');
+            
+            // Add new referral
+            referralData.referrals.push({
+                name: referredName,
+                email: referredEmail,
+                date: new Date().toLocaleDateString(),
+                deposit: 0,
+                commission: 0,
+                status: 'pending'
+            });
+            
+            referralData.total += 1;
+            referralData.pending += 1;
+            
+            // Save updated referral data
+            localStorage.setItem('referralData', JSON.stringify(referralData));
+            
+            // Show notification to the referrer (in a real app, this would be a push notification or email)
+            console.log(`New referral: ${referredName} (${referredEmail}) signed up using your code ${referralCode}`);
+        }
+
+        // Simulate referral making a deposit (for demo purposes)
+        function simulateReferralDeposit() {
+            const referralData = JSON.parse(localStorage.getItem('referralData') || '{"total": 0, "active": 0, "earnings": 0, "pending": 0, "referrals": []}');
+            
+            if (referralData.referrals.length > 0 && referralData.pending > 0) {
+                // Find a pending referral
+                const pendingReferral = referralData.referrals.find(ref => ref.status === 'pending');
+                
+                if (pendingReferral) {
+                    // Simulate a deposit between 5,000 and 50,000 UGX
+                    const depositAmount = Math.floor(Math.random() * 45000) + 5000;
+                    const commission = Math.floor(depositAmount * 0.08); // 8% commission
+                    
+                    // Update referral status
+                    pendingReferral.deposit = depositAmount;
+                    pendingReferral.commission = commission;
+                    pendingReferral.status = 'active';
+                    
+                    // Update referral stats
+                    referralData.active += 1;
+                    referralData.pending -= 1;
+                    referralData.earnings += commission;
+                    
+                    // Save updated referral data
+                    localStorage.setItem('referralData', JSON.stringify(referralData));
+                    
+                    // Add commission to wallet balance
+                    const currentBalance = parseFloat(localStorage.getItem('walletBalance') || '0');
+                    localStorage.setItem('walletBalance', (currentBalance + commission).toString());
+                    
+                    // Update UI
+                    updateBalance();
+                    loadReferralData();
+                    
+                    // Show notification
+                    alert(`Congratulations! You earned ${commission.toLocaleString()} UGX commission from ${pendingReferral.name}'s deposit.`);
+                }
+            }
+        }
+
+        // Profile Form Submission
+        document.getElementById('profile-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const firstName = document.getElementById('profile-firstName').value;
+            const lastName = document.getElementById('profile-lastName').value;
+            const email = document.getElementById('profile-email').value;
+            const phone = document.getElementById('profile-phone').value;
+            
+            // Simple validation
+            if (!firstName || !lastName || !email || !phone) {
+                alert('Please fill in all fields');
+                return;
+            }
+            
+            // Update user data
+            const userData = JSON.parse(localStorage.getItem('userData') || '{}');
+            userData.firstName = firstName;
+            userData.lastName = lastName;
+            userData.email = email;
+            userData.phone = phone;
+            
+            localStorage.setItem('userData', JSON.stringify(userData));
+            
+            // Update UI
+            document.querySelector('.user-name').textContent = firstName;
+            document.querySelector('.user-avatar').textContent = firstName.charAt(0);
+            document.getElementById('welcome-user').textContent = `Welcome back, ${firstName}!`;
+            
+            // Update referral code
+            const referralCode = firstName.toUpperCase() + '123';
+            document.getElementById('referral-code').textContent = referralCode;
+            document.getElementById('referralLink').value = `https://jada5.com/signup?ref=${referralCode}`;
+            
+            alert('Profile updated successfully!');
+        });
+
+        // Change Password Form Submission
+        document.getElementById('change-password-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const currentPassword = document.getElementById('current-password').value;
+            const newPassword = document.getElementById('new-password').value;
+            const confirmPassword = document.getElementById('confirm-new-password').value;
+            
+            // Simple validation
+            if (!currentPassword || !newPassword || !confirmPassword) {
+                alert('Please fill in all fields');
+                return;
+            }
+            
+            if (newPassword !== confirmPassword) {
+                alert('New passwords do not match');
+                return;
+            }
+            
+            // In a real application, you would verify the current password with the server
+            // For this demo, we'll just show a success message
+            alert('Password changed successfully!');
+            document.getElementById('change-password-form').reset();
+        });
+
+        // Delete Account Button
+        document.getElementById('delete-account-btn').addEventListener('click', function() {
+            document.getElementById('deleteAccountModal').style.display = 'flex';
+        });
+
+        // Confirm Delete Account
+        document.getElementById('confirm-delete-account').addEventListener('click', function() {
+            const password = document.getElementById('delete-password').value;
+            
+            if (!password) {
+                alert('Please enter your password to confirm account deletion');
+                return;
+            }
+            
+            // In a real application, you would verify the password with the server
+            // For this demo, we'll just simulate the account deletion
+            localStorage.removeItem('isLoggedIn');
+            localStorage.removeItem('userData');
+            localStorage.removeItem('walletBalance');
+            localStorage.removeItem('transactions');
+            localStorage.removeItem('referralData');
+            
+            document.getElementById('deleteAccountModal').style.display = 'none';
+            alert('Your account has been deleted successfully.');
+            
+            checkAuthStatus();
+        });
+
+        // Logout functionality
+        document.getElementById('logoutBtn').addEventListener('click', function(e) {
+            e.preventDefault();
+            localStorage.removeItem('isLoggedIn');
+            checkAuthStatus();
+        });
+
+        // Modal Functionality
+        const modal = document.getElementById('purchaseModal');
+        const purchaseButtons = document.querySelectorAll('.purchase-btn');
+        const closeModal = document.querySelectorAll('.close-modal');
+        const quantityInput = document.getElementById('quantity');
+        const modalQuantity = document.getElementById('modal-quantity');
+        const modalTotal = document.getElementById('modal-total');
+        const modalDrawType = document.getElementById('modal-draw-type');
+        
+        purchaseButtons.forEach(button => {
+            if (!button.closest('.wheel-category-card') && !button.closest('#withdrawal-form')) {
+                button.addEventListener('click', () => {
+                    const drawType = button.getAttribute('data-draw');
+                    modalDrawType.textContent = drawType.charAt(0).toUpperCase() + drawType.slice(1) + ' Draw';
+                    modal.style.display = 'flex';
+                });
+            }
+        });
+        
+        closeModal.forEach(closeBtn => {
+            closeBtn.addEventListener('click', () => {
+                document.querySelectorAll('.modal').forEach(modal => {
+                    modal.style.display = 'none';
+                });
+            });
+        });
+        
+        window.addEventListener('click', (event) => {
+            if (event.target.classList.contains('modal')) {
+                document.querySelectorAll('.modal').forEach(modal => {
+                    modal.style.display = 'none';
+                });
+            }
+        });
+        
+        quantityInput.addEventListener('change', updatePurchaseSummary);
+        quantityInput.addEventListener('input', updatePurchaseSummary);
+        
+        function updatePurchaseSummary() {
+            const quantity = parseInt(quantityInput.value) || 1;
+            const total = quantity * 1000;
+            
+            modalQuantity.textContent = quantity;
+            modalTotal.textContent = total.toLocaleString() + ' UGX';
+        }
+        
+        // Tab navigation for wallet
+        document.querySelectorAll('.nav-tabs a').forEach(tab => {
+            tab.addEventListener('click', (e) => {
+                e.preventDefault();
+                
+                // Remove active class from all tabs and content
+                document.querySelectorAll('.nav-tabs a').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                
+                // Add active class to clicked tab and corresponding content
+                tab.classList.add('active');
+                document.querySelector(tab.getAttribute('href')).classList.add('active');
+            });
+        });
+        
+        // Function to update balance
+        function updateBalance() {
+            // Get balance from localStorage or set to 0 if not exists
+            let balance = parseFloat(localStorage.getItem('walletBalance') || '0');
+            
+            document.getElementById('balance').textContent = `UGX ${balance.toLocaleString()}`;
+            document.getElementById('header-balance').textContent = `UGX ${balance.toLocaleString()}`;
+            return balance;
+        }
+        
+        // Function to load transactions
+        function loadTransactions() {
+            const transactions = JSON.parse(localStorage.getItem('transactions') || '[]');
+            const tbody = document.getElementById('transactions-body');
+            tbody.innerHTML = '';
+            
+            transactions.forEach((transaction, index) => {
+                const row = document.createElement('tr');
+                
+                row.innerHTML = `
+                    <td>${index + 1}</td>
+                    <td>${transaction.transaction_id}</td>
+                    <td>${transaction.type}</td>
+                    <td class="status-${transaction.status}">${transaction.status}</td>
+                    <td>${transaction.amount}</td>
+                    <td>${transaction.date}</td>
+                `;
+                
+                tbody.appendChild(row);
+            });
+        }
+        
+        // Handle withdrawal form submission
+        document.getElementById('withdrawal-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const phone = document.getElementById('withdraw-phone').value;
+            const amount = document.getElementById('withdraw-amount').value;
+            const balance = parseFloat(localStorage.getItem('walletBalance') || '0');
+            
+            // Validate phone number
+            if (!phone.match(/^\+2567\d{8}$/)) {
+                document.getElementById('withdraw-alert').innerHTML = `
+                    <div class="alert alert-error">Please enter a valid Ugandan phone number starting with +2567 followed by 8 digits.</div>
+                `;
+                return;
+            }
+            
+            // Validate amount
+            if (parseFloat(amount) <= 0) {
+                document.getElementById('withdraw-alert').innerHTML = `
+                    <div class="alert alert-error">Please enter a valid amount greater than 0.</div>
+                `;
+                return;
+            }
+            
+            if (parseFloat(amount) > balance) {
+                document.getElementById('withdraw-alert').innerHTML = `
+                    <div class="alert alert-error">Insufficient balance for this withdrawal.</div>
+                `;
+                return;
+            }
+            
+            // Create transaction
+            const transaction = {
+                transaction_id: 'wd_' + Math.random().toString(36).substr(2, 9),
+                status: 'pending',
+                amount: amount,
+                type: 'withdrawal',
+                date: new Date().toLocaleString()
+            };
+            
+            // Save to localStorage
+            const transactions = JSON.parse(localStorage.getItem('transactions') || '[]');
+            transactions.push(transaction);
+            localStorage.setItem('transactions', JSON.stringify(transactions));
+            
+            // Update balance
+            const newBalance = balance - parseFloat(amount);
+            localStorage.setItem('walletBalance', newBalance.toString());
+            
+            // Show success message
+            document.getElementById('withdraw-alert').innerHTML = `
+                <div class="alert alert-success">Withdrawal request submitted successfully! You will receive a confirmation SMS shortly.</div>
+            `;
+            
+            // Clear form
+            document.getElementById('withdrawal-form').reset();
+            
+            // Update UI
+            updateBalance();
+            loadTransactions();
+            
+            // Simulate SMS sending
+            console.log(`SMS would be sent to ${phone}: Your withdrawal request of UGX ${amount} has been received.`);
+        });
+        
+        // Simulate deposit callback
+        function simulateDepositCallback() {
+            // Check if we have a recent deposit to simulate
+            if (localStorage.getItem('simulateDeposit')) {
+                const depositData = JSON.parse(localStorage.getItem('simulateDeposit'));
+                
+                const transaction = {
+                    transaction_id: depositData.transaction_id,
+                    status: 'completed',
+                    amount: depositData.amount,
+                    type: 'deposit',
+                    date: new Date().toLocaleString()
+                };
+                
+                // Save to localStorage
+                const transactions = JSON.parse(localStorage.getItem('transactions') || '[]');
+                transactions.push(transaction);
+                localStorage.setItem('transactions', JSON.stringify(transactions));
+                
+                // Update balance
+                const currentBalance = parseFloat(localStorage.getItem('walletBalance') || '0');
+                const newBalance = currentBalance + parseFloat(depositData.amount);
+                localStorage.setItem('walletBalance', newBalance.toString());
+                
+                // Show success message
+                document.getElementById('deposit-alert').innerHTML = `
+                    <div class="alert alert-success">Deposit of UGX ${depositData.amount} received successfully! You will receive a confirmation SMS shortly.</div>
+                `;
+                
+                // Update UI
+                updateBalance();
+                loadTransactions();
+                
+                // Clear the simulation flag
+                localStorage.removeItem('simulateDeposit');
+                
+                // Simulate SMS sending
+                console.log(`SMS would be sent: Your deposit of UGX ${depositData.amount} was received.`);
+            }
+        }
+        
+        // Simulate deposit button
+        document.getElementById('simulate-deposit').addEventListener('click', function() {
+            const amount = prompt('Enter deposit amount (UGX):');
+            if (amount && !isNaN(amount) && parseFloat(amount) > 0) {
+                localStorage.setItem('simulateDeposit', JSON.stringify({
+                    transaction_id: 'dep_' + Math.random().toString(36).substr(2, 9),
+                    amount: parseFloat(amount)
+                }));
+                simulateDepositCallback();
+            }
+        });
+
+        // Simulate referral deposit button (for demo purposes)
+        function addSimulateReferralButton() {
+            const referralsSection = document.getElementById('referrals-section');
+            const simulateButton = document.createElement('button');
+            simulateButton.textContent = 'Simulate Referral Deposit (Demo Only)';
+            simulateButton.style.marginTop = '20px';
+            simulateButton.style.backgroundColor = '#27ae60';
+            simulateButton.style.color = 'white';
+            simulateButton.style.border = 'none';
+            simulateButton.style.padding = '10px 15px';
+            simulateButton.style.borderRadius = 'var(--radius)';
+            simulateButton.style.cursor = 'pointer';
+            
+            simulateButton.addEventListener('click', simulateReferralDeposit);
+            
+            const referralsTableContainer = document.querySelector('.referral-table-container');
+            referralsTableContainer.appendChild(simulateButton);
+        }
+        
+        // Initialize the page
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check authentication status
+            checkAuthStatus();
+            
+            // Set current year for footer
+            document.querySelector('.footer-bottom p').innerHTML = `&copy; ${new Date().getFullYear()} Jada 5. All rights reserved.`;
+            
+            // Initialize wallet functionality
+            updateBalance();
+            loadTransactions();
+            simulateDepositCallback();
+            
+            // Add simulate referral button for demo
+            addSimulateReferralButton();
+            
+            // Auth buttons event listeners
+            document.getElementById('loginBtn').addEventListener('click', () => {
+                document.getElementById('authSection').style.display = 'block';
+                document.getElementById('dashboardSection').style.display = 'none';
+            });
+            
+            document.getElementById('signupBtn').addEventListener('click', () => {
+                document.getElementById('authSection').style.display = 'block';
+                document.getElementById('dashboardSection').style.display = 'none';
+                document.querySelectorAll('.auth-tab').forEach(tab => tab.classList.remove('active'));
+                document.querySelectorAll('.auth-content').forEach(content => content.classList.remove('active'));
+                document.getElementById('signup-tab').classList.add('active');
+                document.getElementById('signup-content').classList.add('active');
+            });
+        });
+    </script>
+</body>
+</html>

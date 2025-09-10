@@ -1,0 +1,1384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ultimate Dice Game - Corrected</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #4a6cfa;
+            --primary-dark: #3a5bd9;
+            --secondary: #f5f7ff;
+            --text: #2d3748;
+            --text-light: #718096;
+            --background: #ffffff;
+            --card-bg: #f8fafc;
+            --success: #48bb78;
+            --danger: #e53e3e;
+            --warning: #ed8936;
+            --border: #e2e8f0;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --radius: 12px;
+            --gold: #ffd700;
+            --silver: #c0c0c0;
+            --bronze: #cd7f32;
+        }
+
+        .dark-theme {
+            --primary: #5b7efc;
+            --primary-dark: #4a6cfa;
+            --secondary: #2d3748;
+            --text: #e2e8f0;
+            --text-light: #a0aec0;
+            --background: #1a202c;
+            --card-bg: #2d3748;
+            --border: #4a5568;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--background);
+            color: var(--text);
+            line-height: 1.6;
+            background: linear-gradient(135deg, var(--secondary) 0%, var(--background) 100%);
+            min-height: 100vh;
+            transition: all 0.3s ease;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+
+        /* Header Styles */
+        header {
+            background-color: var(--primary);
+            color: white;
+            padding: 1rem 0;
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+        }
+
+        .logo i {
+            margin-right: 0.5rem;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 1.5rem;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: opacity 0.3s;
+        }
+
+        .nav-links a:hover {
+            opacity: 0.8;
+        }
+
+        .user-actions {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .theme-switch {
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            font-size: 1.2rem;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background-color: var(--secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary);
+            font-weight: bold;
+        }
+
+        .user-name {
+            font-weight: 500;
+        }
+
+        .dropdown-icon {
+            font-size: 0.8rem;
+        }
+
+        /* Mobile Menu */
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        /* Main Content */
+        .main-content {
+            padding: 2rem 0;
+            min-height: 70vh;
+        }
+
+        .game-container {
+            max-width: 900px;
+            margin: 0 auto;
+            background-color: var(--card-bg);
+            border-radius: var(--radius);
+            padding: 2rem;
+            box-shadow: var(--shadow);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .game-title {
+            text-align: center;
+            margin-bottom: 1.5rem;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .game-title i {
+            font-size: 2rem;
+        }
+
+        /* Addictive Elements */
+        .addictive-elements {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+        
+        .streak-counter {
+            background-color: var(--primary);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: var(--radius);
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .daily-bonus {
+            background: linear-gradient(135deg, var(--warning) 0%, #f56565 100%);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: var(--radius);
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: transform 0.3s;
+        }
+        
+        .daily-bonus:hover {
+            transform: scale(1.05);
+        }
+        
+        .vip-status {
+            background: linear-gradient(135deg, var(--gold) 0%, var(--silver) 100%);
+            color: black;
+            padding: 0.5rem 1rem;
+            border-radius: var(--radius);
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .game-info {
+            text-align: center;
+            margin-bottom: 1.5rem;
+            padding: 1rem;
+            background-color: var(--secondary);
+            border-radius: var(--radius);
+        }
+
+        .odds-info {
+            font-weight: bold;
+            color: var(--primary);
+        }
+
+        .balance-info {
+            text-align: center;
+            margin-bottom: 1.5rem;
+            font-size: 1.1rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .balance-amount {
+            font-weight: bold;
+            color: var(--primary);
+            font-size: 1.3rem;
+        }
+
+        /* Betting Tiers */
+        .betting-tiers {
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+        
+        .bet-tier {
+            padding: 0.7rem 1.2rem;
+            border: 2px solid var(--primary);
+            border-radius: var(--radius);
+            background: transparent;
+            color: var(--primary);
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .bet-tier.active {
+            background-color: var(--primary);
+            color: white;
+            transform: scale(1.05);
+        }
+        
+        .bet-tier:hover:not(.active) {
+            background-color: var(--secondary);
+        }
+
+        .bet-selection {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .bet-btn {
+            padding: 1rem 2rem;
+            border: 2px solid var(--primary);
+            border-radius: var(--radius);
+            background: transparent;
+            color: var(--primary);
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            min-width: 120px;
+        }
+
+        .bet-btn.active {
+            background-color: var(--primary);
+            color: white;
+            box-shadow: 0 0 15px rgba(74, 108, 250, 0.5);
+        }
+
+        .bet-btn:hover:not(.active) {
+            background-color: var(--secondary);
+        }
+
+        /* Dice Container */
+        .special-effects {
+            position: relative;
+            margin-bottom: 2rem;
+        }
+
+        .dice-container {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 2rem;
+            perspective: 1000px;
+        }
+
+        .dice {
+            width: 100px;
+            height: 100px;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 1s ease;
+        }
+
+        .dice-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: white;
+            border-radius: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            backface-visibility: hidden;
+        }
+
+        .dot {
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            background: black;
+            position: absolute;
+        }
+
+        /* Dice face configurations */
+        .face-1 .dot:nth-child(1) { top: 50%; left: 50%; transform: translate(-50%, -50%); }
+        
+        .face-2 .dot:nth-child(1) { top: 25%; left: 25%; }
+        .face-2 .dot:nth-child(2) { bottom: 25%; right: 25%; }
+        
+        .face-3 .dot:nth-child(1) { top: 25%; left: 25%; }
+        .face-3 .dot:nth-child(2) { top: 50%; left: 50%; transform: translate(-50%, -50%); }
+        .face-3 .dot:nth-child(3) { bottom: 25%; right: 25%; }
+        
+        .face-4 .dot:nth-child(1) { top: 25%; left: 25%; }
+        .face-4 .dot:nth-child(2) { top: 25%; right: 25%; }
+        .face-4 .dot:nth-child(3) { bottom: 25%; left: 25%; }
+        .face-4 .dot:nth-child(4) { bottom: 25%; right: 25%; }
+        
+        .face-5 .dot:nth-child(1) { top: 25%; left: 25%; }
+        .face-5 .dot:nth-child(2) { top: 25%; right: 25%; }
+        .face-5 .dot:nth-child(3) { top: 50%; left: 50%; transform: translate(-50%, -50%); }
+        .face-5 .dot:nth-child(4) { bottom: 25%; left: 25%; }
+        .face-5 .dot:nth-child(5) { bottom: 25%; right: 25%; }
+        
+        .face-6 .dot:nth-child(1) { top: 25%; left: 25%; }
+        .face-6 .dot:nth-child(2) { top: 25%; right: 25%; }
+        .face-6 .dot:nth-child(3) { top: 50%; left: 25%; transform: translateY(-50%); }
+        .face-6 .dot:nth-child(4) { top: 50%; right: 25%; transform: translateY(-50%); }
+        .face-6 .dot:nth-child(5) { bottom: 25%; left: 25%; }
+        .face-6 .dot:nth-child(6) { bottom: 25%; right: 25%; }
+
+        /* Dice face positions */
+        .front  { transform: translateZ(50px); }
+        .back   { transform: rotateY(180deg) translateZ(50px); }
+        .right  { transform: rotateY(90deg) translateZ(50px); }
+        .left   { transform: rotateY(-90deg) translateZ(50px); }
+        .top    { transform: rotateX(90deg) translateZ(50px); }
+        .bottom { transform: rotateX(-90deg) translateZ(50px); }
+
+        /* Roll Button */
+        .roll-btn {
+            display: block;
+            margin: 0 auto;
+            padding: 1rem 2rem;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            border: none;
+            border-radius: var(--radius);
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: var(--shadow);
+        }
+
+        .roll-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .roll-btn:disabled {
+            background: var(--text-light);
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        /* Premium Features */
+        .premium-features {
+            margin-top: 2rem;
+            padding: 1.5rem;
+            background: linear-gradient(135deg, var(--card-bg) 0%, var(--secondary) 100%);
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+        }
+        
+        .premium-title {
+            text-align: center;
+            margin-bottom: 1rem;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+        
+        .premium-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+        
+        .premium-btn {
+            background: linear-gradient(135deg, var(--gold) 0%, #ffaa00 100%);
+            color: #000;
+            border: none;
+            border-radius: var(--radius);
+            padding: 0.8rem 1.5rem;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s;
+        }
+        
+        .premium-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        
+        .premium-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        /* Result Container */
+        .result-container {
+            text-align: center;
+            margin-top: 2rem;
+            padding: 1.5rem;
+            border-radius: var(--radius);
+            background-color: var(--secondary);
+            display: none;
+        }
+
+        .result-sum {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+            color: var(--primary);
+        }
+
+        .result-text {
+            font-size: 1.2rem;
+            font-weight: 500;
+        }
+
+        .win {
+            color: var(--success);
+        }
+
+        .lose {
+            color: var(--danger);
+        }
+
+        .neutral {
+            color: var(--warning);
+        }
+
+        /* Win Animation */
+        .win-animation {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 10;
+            pointer-events: none;
+        }
+        
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            opacity: 0.7;
+        }
+        
+        .near-miss {
+            animation: nearMiss 0.5s ease-in-out;
+        }
+        
+        @keyframes nearMiss {
+            0% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            50% { transform: translateX(5px); }
+            75% { transform: translateX(-5px); }
+            100% { transform: translateX(0); }
+        }
+        
+        @keyframes roll {
+            0% { transform: rotateX(0) rotateY(0) rotateZ(0); }
+            100% { transform: rotateX(720deg) rotateY(360deg) rotateZ(180deg); }
+        }
+
+        /* Footer */
+        footer {
+            background-color: var(--primary-dark);
+            color: white;
+            padding: 3rem 0 1.5rem;
+            margin-top: 3rem;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .footer-section h3 {
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+            color: white;
+        }
+
+        .footer-links {
+            list-style: none;
+        }
+
+        .footer-links li {
+            margin-bottom: 0.5rem;
+        }
+
+        .footer-links a {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .footer-links a:hover {
+            color: white;
+            text-decoration: underline;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .social-links a {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 1.5rem;
+            transition: color 0.3s;
+        }
+
+        .social-links a:hover {
+            color: white;
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 1.5rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        /* Notification */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: var(--primary);
+            color: white;
+            padding: 1rem;
+            border-radius: var(--radius);
+            z-index: 1000;
+            box-shadow: var(--shadow);
+            opacity: 0;
+            transform: translateY(-20px);
+            transition: opacity 0.5s, transform 0.5s;
+        }
+
+        .notification.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 768px) {
+            .header-content {
+                flex-wrap: wrap;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .mobile-menu-btn {
+                display: block;
+            }
+
+            .dice-container {
+                gap: 1rem;
+            }
+
+            .dice {
+                width: 80px;
+                height: 80px;
+            }
+
+            .bet-selection, .betting-tiers {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .bet-btn, .bet-tier {
+                width: 100%;
+                max-width: 250px;
+            }
+            
+            .addictive-elements {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .premium-buttons {
+                flex-direction: column;
+            }
+            
+            .premium-btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .user-name {
+                display: none;
+            }
+
+            .dice {
+                width: 60px;
+                height: 60px;
+            }
+
+            .dot {
+                width: 10px;
+                height: 10px;
+            }
+            
+            .game-container {
+                padding: 1rem;
+            }
+            
+            .game-title {
+                font-size: 1.5rem;
+            }
+            
+            .roll-btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container header-content">
+            <div class="logo">
+                <i class="fas fa-dice"></i>
+                <span>Lucky Dice</span>
+            </div>
+            
+            <nav class="nav-links">
+                <a href="#">Home</a>
+                <a href="#">Leaderboard</a>
+                <a href="#">Promotions</a>
+                <a href="#">VIP Club</a>
+                <a href="#">Support</a>
+            </nav>
+            
+            <div class="user-actions">
+                <button id="themeSwitcher" class="theme-switch">
+                    <i class="fas fa-moon"></i>
+                </button>
+                
+                <div class="user-profile">
+                    <div class="user-avatar">D</div>
+                    <span class="user-name">David</span>
+                    <i class="fas fa-chevron-down dropdown-icon"></i>
+                </div>
+                
+                <button class="mobile-menu-btn">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+    
+    <!-- Main Content -->
+    <div class="container main-content">
+        <div class="game-container">
+            <h1 class="game-title"><i class="fas fa-dice-d20"></i> Ultimate Dice Game</h1>
+            
+            <!-- Addictive Elements -->
+            <div class="addictive-elements">
+                <div class="streak-counter">
+                    <i class="fas fa-fire"></i> Win Streak: <span id="streakCount">0</span>
+                </div>
+                <div class="daily-bonus" id="dailyBonus">
+                    <i class="fas fa-gift"></i> Daily Bonus
+                </div>
+                <div class="vip-status">
+                    <i class="fas fa-crown"></i> Bronze VIP
+                </div>
+            </div>
+            
+            <div class="game-info">
+                <p>Bet <span class="odds-info" id="currentBetDisplay">200</span> UGX to win <span class="odds-info" id="potentialWin">360</span> UGX (<span id="multiplier">1.8</span>x)</p>
+                <p>Win probability: <span class="odds-info">25%</span> | House edge: <span class="odds-info">5%</span></p>
+            </div>
+            
+            <!-- Betting Tiers -->
+            <div class="betting-tiers">
+                <button class="bet-tier" data-bet-amount="200">200 UGX</button>
+                <button class="bet-tier active" data-bet-amount="500">500 UGX</button>
+                <button class="bet-tier" data-bet-amount="1000">1000 UGX</button>
+                <button class="bet-tier" data-bet-amount="2000">2000 UGX</button>
+            </div>
+            
+            <div class="balance-info">
+                <i class="fas fa-wallet"></i> Balance: <span class="balance-amount">5,200 UGX</span>
+            </div>
+            
+            <div class="bet-selection">
+                <button class="bet-btn" data-bet="above">Above 7</button>
+                <button class="bet-btn" data-bet="under">Under 7</button>
+                <button class="bet-btn" data-bet="lucky">Lucky 7</button>
+            </div>
+            
+            <div class="special-effects">
+                <div class="dice-container">
+                    <div class="dice" id="dice1">
+                        <div class="dice-face face-1 front">
+                            <div class="dot"></div>
+                        </div>
+                        <div class="dice-face face-2 back">
+                            <div class="dot"></div>
+                            <div class="dot"></div>
+                        </div>
+                        <div class="dice-face face-3 right">
+                            <div class="dot"></div>
+                            <div class="dot"></div>
+                            <div class="dot"></div>
+                        </div>
+                        <div class="dice-face face-4 left">
+                            <div class="dot"></div>
+                            <div class="dot"></div>
+                            <div class="dot"></div>
+                            <div class="dot"></div>
+                        </div>
+                        <div class="dice-face face-5 top">
+                            <div class="dot"></div>
+                            <div class="dot"></div>
+                            <div class="dot"></div>
+                            <div class="dot"></div>
+                            <div class="dot"></div>
+                        </div>
+                        <div class="dice-face face-6 bottom">
+                            <div class="dot"></div>
+                            <div class="dot"></div>
+                            <div class="dot"></div>
+                            <div class="dot"></div>
+                            <div class="dot"></div>
+                            <div class="dot"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="dice" id="dice2">
+                        <div class="dice-face face-1 front">
+                            <div class="dot"></div>
+                        </div>
+                        <div class="dice-face face-2 back">
+                            <div class="dot"></div>
+                            <div class="dot"></div>
+                        </div>
+                        <div class="dice-face face-3 right">
+                            <div class="dot"></div>
+                            <div class="dot"></div>
+                            <div class="dot"></div>
+                        </div>
+                        <div class="dice-face face-4 left">
+                            <div class="dot"></div>
+                            <div class="dot"></div>
+                            <div class="dot"></div>
+                            <div class="dot"></div>
+                        </div>
+                        <div class="dice-face face-5 top">
+                            <div class="dot"></div>
+                            <div class="dot"></div>
+                            <div class="dot"></div>
+                            <div class="dot"></div>
+                            <div class="dot"></div>
+                        </div>
+                        <div class="dice-face face-6 bottom">
+                            <div class="dot"></div>
+                            <div class="dot"></div>
+                            <div class="dot"></div>
+                            <div class="dot"></div>
+                            <div class="dot"></div>
+                            <div class="dot"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="win-animation" id="winAnimation">
+                    <i class="fas fa-trophy" style="font-size: 3rem; color: gold;"></i>
+                </div>
+            </div>
+            
+            <button id="rollBtn" class="roll-btn"><i class="fas fa-dice"></i> Roll Dice (<span id="currentBetAmount">200</span> UGX)</button>
+            
+            <!-- Premium Features -->
+            <div class="premium-features">
+                <h3 class="premium-title"><i class="fas fa-crown"></i> Premium Features</h3>
+                <div class="premium-buttons">
+                    <button class="premium-btn" id="luckyDiceBtn"><i class="fas fa-dice-d6"></i> Lucky Dice (500 UGX)</button>
+                    <button class="premium-btn" id="doubleRewardsBtn"><i class="fas fa-coins"></i> Double Rewards (1000 UGX)</button>
+                    <button class="premium-btn" id="insuranceBtn"><i class="fas fa-shield-alt"></i> Insurance (300 UGX)</button>
+                </div>
+            </div>
+            
+            <div class="result-container" id="resultContainer">
+                <div class="result-sum" id="resultSum">Sum: 0</div>
+                <div class="result-text" id="resultText"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>About Lucky Dice</h3>
+                    <p>The most exciting dice game with the best rewards and premium features!</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>Quick Links</h3>
+                    <ul class="footer-links">
+                        <li><a href="#">Home</a></li>
+                        <li><a href="#">How to Play</a></li>
+                        <li><a href="#">Leaderboard</a></li>
+                        <li><a href="#">Promotions</a></li>
+                        <li><a href="#">VIP Club</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>Support</h3>
+                    <ul class="footer-links">
+                        <li><a href="#">FAQ</a></li>
+                        <li><a href="#">Contact Us</a></li>
+                        <li><a href="#">Terms & Conditions</a></li>
+                        <li><a href="#">Privacy Policy</a></li>
+                        <li><a href="#">Responsible Gaming</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>Contact</h3>
+                    <ul class="footer-links">
+                        <li><i class="fas fa-map-marker-alt"></i> Kampala, Uganda</li>
+                        <li><i class="fas fa-phone"></i> +256 123 456 789</li>
+                        <li><i class="fas fa-envelope"></i> support@luckydice.com</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2023 Lucky Dice. All rights reserved. | Gambling can be addictive, please play responsibly.</p>
+            </div>
+        </div>
+    </footer>
+
+    <div id="notification" class="notification"></div>
+
+    <script>
+        // Game Variables
+        let selectedBet = null;
+        let balance = 5200;
+        let currentBetAmount = 200;
+        let winMultiplier = 1.8;
+        let winProbability = 0.25;
+        let streakCount = 0;
+        let dailyBonusClaimed = false;
+        let luckyDiceActive = false;
+        let doubleRewardsActive = false;
+        let insuranceActive = false;
+        let houseEdge = 0.05; // 5% house edge
+
+        // DOM Elements
+        const themeSwitcher = document.getElementById('themeSwitcher');
+        const themeIcon = themeSwitcher.querySelector('i');
+        const betButtons = document.querySelectorAll('.bet-btn');
+        const betTiers = document.querySelectorAll('.bet-tier');
+        const rollBtn = document.getElementById('rollBtn');
+        const dice1 = document.getElementById('dice1');
+        const dice2 = document.getElementById('dice2');
+        const resultContainer = document.getElementById('resultContainer');
+        const resultSum = document.getElementById('resultSum');
+        const resultText = document.getElementById('resultText');
+        const balanceAmount = document.querySelector('.balance-amount');
+        const streakCounter = document.getElementById('streakCount');
+        const dailyBonus = document.getElementById('dailyBonus');
+        const winAnimation = document.getElementById('winAnimation');
+        const currentBetDisplay = document.getElementById('currentBetDisplay');
+        const potentialWinDisplay = document.getElementById('potentialWin');
+        const multiplierDisplay = document.getElementById('multiplier');
+        const currentBetAmountDisplay = document.getElementById('currentBetAmount');
+        const luckyDiceBtn = document.getElementById('luckyDiceBtn');
+        const doubleRewardsBtn = document.getElementById('doubleRewardsBtn');
+        const insuranceBtn = document.getElementById('insuranceBtn');
+        const notification = document.getElementById('notification');
+
+        // Initialize the game
+        updateDisplay();
+
+        // Theme Toggling
+        themeSwitcher.addEventListener('click', () => {
+            document.body.classList.toggle('dark-theme');
+            if (document.body.classList.contains('dark-theme')) {
+                themeIcon.classList.remove('fa-moon');
+                themeIcon.classList.add('fa-sun');
+            } else {
+                themeIcon.classList.remove('fa-sun');
+                themeIcon.classList.add('fa-moon');
+            }
+        });
+
+        // Select bet type
+        betButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                betButtons.forEach(btn => btn.classList.remove('active'));
+                button.classList.add('active');
+                selectedBet = button.getAttribute('data-bet');
+                updateDisplay();
+            });
+        });
+
+        // Select bet amount
+        betTiers.forEach(tier => {
+            tier.addEventListener('click', () => {
+                betTiers.forEach(t => t.classList.remove('active'));
+                tier.classList.add('active');
+                currentBetAmount = parseInt(tier.getAttribute('data-bet-amount'));
+                updateDisplay();
+            });
+        });
+
+        // Daily bonus claim
+        dailyBonus.addEventListener('click', () => {
+            if (!dailyBonusClaimed) {
+                balance += 500;
+                dailyBonusClaimed = true;
+                updateDisplay();
+                showNotification('Daily bonus claimed! 500 UGX added to your balance.');
+                dailyBonus.style.opacity = '0.5';
+            } else {
+                showNotification('You have already claimed your daily bonus today. Come back tomorrow!');
+            }
+        });
+
+        // Premium features
+        luckyDiceBtn.addEventListener('click', () => {
+            if (balance >= 500) {
+                balance -= 500;
+                luckyDiceActive = true;
+                updateDisplay();
+                showNotification('Lucky Dice activated for your next roll! Increased win probability.');
+                luckyDiceBtn.disabled = true;
+                
+                setTimeout(() => {
+                    luckyDiceActive = false;
+                    luckyDiceBtn.disabled = false;
+                    showNotification('Lucky Dice effect has ended.');
+                }, 60000);
+            } else {
+                showNotification('Insufficient balance for Lucky Dice');
+            }
+        });
+
+        doubleRewardsBtn.addEventListener('click', () => {
+            if (balance >= 1000) {
+                balance -= 1000;
+                doubleRewardsActive = true;
+                updateDisplay();
+                showNotification('Double Rewards activated for your next roll!');
+                doubleRewardsBtn.disabled = true;
+                
+                setTimeout(() => {
+                    doubleRewardsActive = false;
+                    doubleRewardsBtn.disabled = false;
+                    showNotification('Double Rewards effect has ended.');
+                }, 60000);
+            } else {
+                showNotification('Insufficient balance for Double Rewards');
+            }
+        });
+
+        insuranceBtn.addEventListener('click', () => {
+            if (balance >= 300) {
+                balance -= 300;
+                insuranceActive = true;
+                updateDisplay();
+                showNotification('Insurance purchased. You will get 50% back if you lose.');
+                insuranceBtn.disabled = true;
+            } else {
+                showNotification('Insufficient balance for Insurance');
+            }
+        });
+
+        // Roll the dice
+        rollBtn.addEventListener('click', () => {
+            if (!selectedBet) {
+                showNotification('Please select a bet type first');
+                return;
+            }
+            
+            if (balance < currentBetAmount) {
+                showNotification('Insufficient balance to roll the dice');
+                return;
+            }
+            
+            // Deduct roll cost
+            balance -= currentBetAmount;
+            updateDisplay();
+            
+            // Disable roll button during animation
+            rollBtn.disabled = true;
+            
+            // Generate random dice values
+            const dice1Value = Math.floor(Math.random() * 6) + 1;
+            const dice2Value = Math.floor(Math.random() * 6) + 1;
+            const sum = dice1Value + dice2Value;
+            
+            // Set dice faces based on values
+            setDiceFace(dice1, dice1Value);
+            setDiceFace(dice2, dice2Value);
+            
+            // Animate dice
+            animateDice(dice1);
+            animateDice(dice2);
+            
+            // Show result after animation
+            setTimeout(() => {
+                resultSum.textContent = `Sum: ${sum} (${dice1Value} + ${dice2Value})`;
+                
+                // Calculate win probability (25% base, increased with lucky dice)
+                let currentWinProbability = winProbability;
+                if (luckyDiceActive) {
+                    currentWinProbability = 0.35; // 35% with lucky dice
+                }
+                
+                // Check if player wins based on their bet selection and dice sum
+                let playerWins = false;
+                
+                switch(selectedBet) {
+                    case 'above':
+                        playerWins = (sum > 7);
+                        break;
+                    case 'under':
+                        playerWins = (sum < 7);
+                        break;
+                    case 'lucky':
+                        playerWins = (sum === 7);
+                        break;
+                }
+                
+                // Apply lucky dice effect - if lucky dice is active, use probability instead of exact match
+                if (luckyDiceActive) {
+                    const randomValue = Math.random();
+                    playerWins = (randomValue <= currentWinProbability);
+                }
+                
+                let resultClass, resultMessage;
+                
+                if (playerWins) {
+                    // Player wins
+                    resultClass = 'win';
+                    let winAmount = Math.floor(currentBetAmount * winMultiplier);
+                    
+                    // Double rewards if active
+                    if (doubleRewardsActive) {
+                        winAmount *= 2;
+                    }
+                    
+                    // Apply house edge
+                    winAmount = Math.floor(winAmount * (1 - houseEdge));
+                    
+                    resultMessage = `You win ${winAmount.toLocaleString()} UGX!`;
+                    balance += winAmount;
+                    
+                    // Increase streak
+                    streakCount++;
+                    streakCounter.textContent = streakCount;
+                    
+                    // Show win animation
+                    showWinAnimation();
+                    
+                    // Special bonus for high streaks
+                    if (streakCount % 5 === 0) {
+                        const bonus = currentBetAmount;
+                        balance += bonus;
+                        resultMessage += ` + ${bonus.toLocaleString()} UGX streak bonus!`;
+                    }
+                } else {
+                    // Player loses
+                    resultClass = 'lose';
+                    resultMessage = 'You lose! Try again.';
+                    
+                    // Insurance refund
+                    if (insuranceActive) {
+                        const refund = Math.floor(currentBetAmount * 0.5);
+                        balance += refund;
+                        resultMessage += ` Insurance refund: ${refund} UGX`;
+                        insuranceActive = false;
+                        insuranceBtn.disabled = false;
+                    }
+                    
+                    // Reset streak
+                    streakCount = 0;
+                    streakCounter.textContent = streakCount;
+                    
+                    // Near-miss effect for sums close to 7
+                    if (sum === 6 || sum === 8) {
+                        resultContainer.classList.add('near-miss');
+                        setTimeout(() => {
+                            resultContainer.classList.remove('near-miss');
+                        }, 500);
+                    }
+                }
+                
+                resultText.className = `result-text ${resultClass}`;
+                resultText.textContent = resultMessage;
+                updateDisplay();
+                
+                resultContainer.style.display = 'block';
+                rollBtn.disabled = false;
+                
+                // Deactivate premium features after use
+                if (luckyDiceActive || doubleRewardsActive) {
+                    luckyDiceActive = false;
+                    doubleRewardsActive = false;
+                    luckyDiceBtn.disabled = false;
+                    doubleRewardsBtn.disabled = false;
+                }
+            }, 2000);
+        });
+        
+        // Set the dice face based on value
+        function setDiceFace(dice, value) {
+            // Remove all existing face classes
+            const faces = ['face-1', 'face-2', 'face-3', 'face-4', 'face-5', 'face-6'];
+            const sides = ['front', 'back', 'right', 'left', 'top', 'bottom'];
+            
+            // Set the correct face for each side
+            sides.forEach(side => {
+                const sideElement = dice.querySelector(`.${side}`);
+                
+                // Remove all face classes
+                faces.forEach(face => {
+                    sideElement.classList.remove(face);
+                });
+                
+                // Add the correct face class
+                sideElement.classList.add(`face-${value}`);
+                
+                // Clear existing dots
+                while (sideElement.firstChild) {
+                    sideElement.removeChild(sideElement.firstChild);
+                }
+                
+                // Add the correct number of dots
+                for (let i = 0; i < value; i++) {
+                    const dot = document.createElement('div');
+                    dot.className = 'dot';
+                    sideElement.appendChild(dot);
+                }
+                
+                // Position the dots based on the face value
+                positionDots(sideElement, value);
+            });
+        }
+        
+        // Position the dots correctly based on dice value
+        function positionDots(sideElement, value) {
+            const dots = sideElement.querySelectorAll('.dot');
+            
+            switch(value) {
+                case 1:
+                    dots[0].style.top = '50%';
+                    dots[0].style.left = '50%';
+                    dots[0].style.transform = 'translate(-50%, -50%)';
+                    break;
+                case 2:
+                    dots[0].style.top = '25%';
+                    dots[0].style.left = '25%';
+                    dots[1].style.bottom = '25%';
+                    dots[1].style.right = '25%';
+                    break;
+                case 3:
+                    dots[0].style.top = '25%';
+                    dots[0].style.left = '25%';
+                    dots[1].style.top = '50%';
+                    dots[1].style.left = '50%';
+                    dots[1].style.transform = 'translate(-50%, -50%)';
+                    dots[2].style.bottom = '25%';
+                    dots[2].style.right = '25%';
+                    break;
+                case 4:
+                    dots[0].style.top = '25%';
+                    dots[0].style.left = '25%';
+                    dots[1].style.top = '25%';
+                    dots[1].style.right = '25%';
+                    dots[2].style.bottom = '25%';
+                    dots[2].style.left = '25%';
+                    dots[3].style.bottom = '25%';
+                    dots[3].style.right = '25%';
+                    break;
+                case 5:
+                    dots[0].style.top = '25%';
+                    dots[0].style.left = '25%';
+                    dots[1].style.top = '25%';
+                    dots[1].style.right = '25%';
+                    dots[2].style.top = '50%';
+                    dots[2].style.left = '50%';
+                    dots[2].style.transform = 'translate(-50%, -50%)';
+                    dots[3].style.bottom = '25%';
+                    dots[3].style.left = '25%';
+                    dots[4].style.bottom = '25%';
+                    dots[4].style.right = '25%';
+                    break;
+                case 6:
+                    dots[0].style.top = '25%';
+                    dots[0].style.left = '25%';
+                    dots[1].style.top = '25%';
+                    dots[1].style.right = '25%';
+                    dots[2].style.top = '50%';
+                    dots[2].style.left = '25%';
+                    dots[2].style.transform = 'translateY(-50%)';
+                    dots[3].style.top = '50%';
+                    dots[3].style.right = '25%';
+                    dots[3].style.transform = 'translateY(-50%)';
+                    dots[4].style.bottom = '25%';
+                    dots[4].style.left = '25%';
+                    dots[5].style.bottom = '25%';
+                    dots[5].style.right = '25%';
+                    break;
+            }
+        }
+        
+        // Animate dice rolling
+        function animateDice(dice) {
+            // Reset animation
+            dice.style.animation = 'none';
+            void dice.offsetWidth; // Trigger reflow
+            
+            // Apply rolling animation
+            dice.style.animation = 'roll 1s ease-out';
+        }
+        
+        // Update display values
+        function updateDisplay() {
+            balanceAmount.textContent = `${balance.toLocaleString()} UGX`;
+            currentBetDisplay.textContent = currentBetAmount;
+            currentBetAmountDisplay.textContent = currentBetAmount;
+            
+            // Calculate potential win
+            let potentialWin = Math.floor(currentBetAmount * winMultiplier);
+            if (doubleRewardsActive) potentialWin *= 2;
+            potentialWin = Math.floor(potentialWin * (1 - houseEdge));
+            
+            potentialWinDisplay.textContent = potentialWin.toLocaleString();
+            multiplierDisplay.textContent = (winMultiplier * (doubleRewardsActive ? 2 : 1)).toFixed(1);
+        }
+        
+        // Win animation function
+        function showWinAnimation() {
+            winAnimation.style.display = 'flex';
+            
+            // Create confetti effect
+            for (let i = 0; i < 30; i++) {
+                const confetti = document.createElement('div');
+                confetti.className = 'confetti';
+                confetti.style.left = Math.random() * 100 + '%';
+                confetti.style.top = Math.random() * 100 + '%';
+                confetti.style.backgroundColor = ['#48bb78', '#4a6cfa', '#ed8936', '#e53e3e'][Math.floor(Math.random() * 4)];
+                confetti.style.transform = `rotate(${Math.random() * 360}deg)`;
+                winAnimation.appendChild(confetti);
+            }
+            
+            setTimeout(() => {
+                winAnimation.style.display = 'none';
+                while (winAnimation.firstChild) {
+                    winAnimation.removeChild(winAnimation.firstChild);
+                }
+            }, 3000);
+        }
+        
+        // Show notification
+        function showNotification(message) {
+            notification.textContent = message;
+            notification.classList.add('show');
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
